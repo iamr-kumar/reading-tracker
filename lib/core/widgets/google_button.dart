@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reading_tracker/core/widgets/loader.dart';
 import 'package:reading_tracker/features/auth/controllers/auth_controller.dart';
-import 'package:reading_tracker/theme/Pallete.dart';
+import 'package:reading_tracker/theme/pallete.dart';
 
 class GoogleSigninButton extends ConsumerWidget {
   const GoogleSigninButton({

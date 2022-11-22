@@ -1,8 +1,10 @@
 // Guest Routes
 import 'package:flutter/material.dart';
+import 'package:reading_tracker/core/widgets/loader.dart';
 import 'package:reading_tracker/features/auth/screens/login_screen.dart';
 import 'package:reading_tracker/features/auth/screens/singup_screen.dart';
 import 'package:reading_tracker/features/auth/screens/welcome_screen.dart';
+import 'package:reading_tracker/features/onboarding/screens/onboarding_screen.dart';
 import 'package:routemaster/routemaster.dart';
 
 final guestRoutes = RouteMap(routes: {
@@ -12,14 +14,24 @@ final guestRoutes = RouteMap(routes: {
 });
 
 // Authenticated Routes
-// final authenticatedRoutes = RouteMap(routes: {
-//   '/': (_) => const MaterialPage(child: HomeScreen()),
-//   '/create-community': (_) =>
-//       const MaterialPage(child: CreateCommunityScreen()),
-//   '/r/:name': (route) =>
-//       MaterialPage(child: CommunityScreen(name: route.pathParameters['name']!)),
-//   '/mod-tools/:name': (route) =>
-//       MaterialPage(child: ModToolsScreen(name: route.pathParameters['name']!)),
-//   '/edit-community/:name': (route) => MaterialPage(
-//       child: EditCommunityScreen(name: route.pathParameters['name']!))
-// });
+final authenticatedRoutes = RouteMap(routes: {
+  // '/': (_) => const MaterialPage(child: HomeScreen()),
+  '/': (_) => const MaterialPage(child: OnboardingScreen())
+  // '/create-community': (_) =>
+  //     const MaterialPage(child: CreateCommunityScreen()),
+  // '/r/:name': (route) =>
+  //     MaterialPage(child: CommunityScreen(name: route.pathParameters['name']!)),
+  // '/mod-tools/:name': (route) =>
+  //     MaterialPage(child: ModToolsScreen(name: route.pathParameters['name']!)),
+  // '/edit-community/:name': (route) => MaterialPage(
+  //     child: EditCommunityScreen(name: route.pathParameters['name']!))
+});
+
+final loadingRoute = RouteMap(routes: {
+  '/': (_) => const MaterialPage(
+          child: Scaffold(
+        body: Center(
+          child: Loader(),
+        ),
+      ))
+});

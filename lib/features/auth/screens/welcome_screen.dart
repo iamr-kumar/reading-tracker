@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:reading_tracker/core/constants/local_constants.dart';
 import 'package:reading_tracker/core/widgets/custom_button.dart';
-import 'package:reading_tracker/theme/Pallete.dart';
+import 'package:reading_tracker/theme/app_styles.dart';
+import 'package:reading_tracker/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -18,70 +21,43 @@ class WelcomeScreen extends StatelessWidget {
       Routemaster.of(context).push('/login');
     }
 
+    final Widget welcomeIllustration = SvgPicture.asset(
+        Constants.welcomeIllustration,
+        height: devHeight * 0.6);
+
     return Scaffold(
+      backgroundColor: Pallete.primaryBlue,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              height: devHeight * 0.58,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/welcome.jpg'),
-                  fit: BoxFit.fill,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: devHeight * 0.02,
-            ),
-            const SizedBox(
-              width: 300,
-              child: Text(
-                'Never miss a Reading Day',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 36,
-                    color: Pallete.textBlue),
-              ),
-            ),
-            SizedBox(
-              height: devHeight * 0.02,
-            ),
-            const SizedBox(
-                width: 350,
-                child: Text(
-                  'Set your reading goals. Get Reminders. Track your progress. Read more.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18, color: Pallete.textGrey),
-                )),
-            SizedBox(height: devHeight * 0.08),
+            const SizedBox(height: 20),
+            welcomeIllustration,
+            SizedBox(height: devHeight * 0.03),
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                        child: Padding(
-                            padding: const EdgeInsets.only(right: 7.5),
-                            child: CustomButton(
-                              text: 'Signup',
-                              onPressed: showSignupScreen,
-                            ))),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 7.5),
-                        child: Expanded(
-                            child: CustomButton(
-                          text: 'Login',
-                          isOutlined: true,
-                          onPressed: showLoginScreen,
-                        )),
-                      ),
-                    )
-                  ],
-                ))
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(Constants.appName,
+                      textAlign: TextAlign.left,
+                      style:
+                          AppStyles.headingOne.copyWith(color: Pallete.white)),
+                ),
+                SizedBox(
+                  height: devHeight * 0.02,
+                ),
+                Text(Constants.welcomeMessage,
+                    textAlign: TextAlign.left,
+                    style: AppStyles.subtext.copyWith(color: Pallete.textGrey)),
+                SizedBox(height: devHeight * 0.06),
+                CustomButton(
+                  text: 'Get Started',
+                  onPressed: showLoginScreen,
+                  isOutlined: true,
+                )
+              ]),
+            )
           ],
         ),
       ),

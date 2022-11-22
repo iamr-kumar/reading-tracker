@@ -1,7 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reading_tracker/core/widgets/error_text.dart';
+import 'package:reading_tracker/core/widgets/loader.dart';
+import 'package:reading_tracker/features/auth/controllers/auth_controller.dart';
 import 'package:reading_tracker/firebase_options.dart';
+import 'package:reading_tracker/models/user_model.dart';
 import 'package:reading_tracker/router.dart';
 import 'package:routemaster/routemaster.dart';
 
@@ -20,20 +24,39 @@ class MyApp extends ConsumerStatefulWidget {
 
 class _MyAppState extends ConsumerState<MyApp> {
   // This widget is the root of your application.
+  UserModel? userModel;
+
+  // void getData(WidgetRef ref, User data) async {
+  //   userModel = await ref
+  //       .watch(authControllerProvider.notifier)
+  //       .getUserData(data.uid)
+  //       .first;
+  //   ref.read(userProvider.notifier).update((state) => userModel);
+  //   setState(() {});
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      title: 'Reading Tracker',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
-        return guestRoutes;
-      }),
-      routeInformationParser: const RoutemasterParser(),
-      // home: const WelcomeScreen(),
-    );
+    return ref.watch(authStateChangeProvider).when(
+        data: (data) => MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              title: 'Reading Tracker',
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+                scaffoldBackgroundColor: Colors.white,
+              ),
+              routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
+                if (data != null) {
+                  return authenticatedRoutes;
+                }
+                return guestRoutes;
+              }),
+              routeInformationParser: const RoutemasterParser(),
+              // home: const WelcomeScreen(),
+            ),
+        error: (error, stackTrace) => ErrorText(
+              error: error.toString(),
+            ),
+        loading: () => const Loader());
   }
 }

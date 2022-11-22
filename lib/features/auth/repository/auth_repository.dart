@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:reading_tracker/core/constants/FirebaseConstats.dart';
+import 'package:reading_tracker/core/constants/firebase_constants.dart';
 import 'package:reading_tracker/core/failure.dart';
 import 'package:reading_tracker/core/type_defs.dart';
 import 'package:reading_tracker/models/user_model.dart';

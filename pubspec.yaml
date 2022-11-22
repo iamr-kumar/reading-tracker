@@ -36,6 +36,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.1.1
+  flutter_svg: ^1.1.6
   fpdart: ^0.3.0
   google_sign_in: ^5.4.2
   routemaster: ^1.0.1
@@ -57,7 +58,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
-
+    - assets/svg/
   # fonts:
   #   - family: Schyler
   #     fonts:

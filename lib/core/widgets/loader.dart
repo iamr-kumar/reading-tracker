@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reading_tracker/theme/Pallete.dart';
+import 'package:reading_tracker/theme/pallete.dart';
 
 class Loader extends StatelessWidget {
   final Color color;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reading_tracker/core/widgets/loader.dart';
-import 'package:reading_tracker/theme/Pallete.dart';
+import 'package:reading_tracker/theme/pallete.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
