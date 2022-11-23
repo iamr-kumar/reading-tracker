@@ -59,7 +59,7 @@ class AuthController extends StateNotifier<bool> {
     );
   }
 
-  void singIn(String email, String password, BuildContext context) async {
+  void login(String email, String password, BuildContext context) async {
     state = true;
     final user = await _authRepository.signIn(email, password);
     state = false;

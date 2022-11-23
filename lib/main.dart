@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,28 +27,36 @@ class _MyAppState extends ConsumerState<MyApp> {
   // This widget is the root of your application.
   UserModel? userModel;
 
-  // void getData(WidgetRef ref, User data) async {
-  //   userModel = await ref
-  //       .watch(authControllerProvider.notifier)
-  //       .getUserData(data.uid)
-  //       .first;
-  //   ref.read(userProvider.notifier).update((state) => userModel);
-  //   setState(() {});
-  // }
+  void getData(WidgetRef ref, User data) async {
+    userModel = await ref
+        .watch(authControllerProvider.notifier)
+        .getUserData(data.uid)
+        .first;
+    ref.read(userProvider.notifier).update((state) => userModel);
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return ref.watch(authStateChangeProvider).when(
         data: (data) => MaterialApp.router(
               debugShowCheckedModeBanner: false,
-              title: 'Reading Tracker',
+              title: 'Read Wise',
               theme: ThemeData(
                 primarySwatch: Colors.blue,
                 scaffoldBackgroundColor: Colors.white,
               ),
               routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
                 if (data != null) {
-                  return authenticatedRoutes;
+                  getData(ref, data);
+                  if (userModel != null) {
+                    print(userModel);
+                    if (userModel!.onboardingComplete!) {
+                      return authenticatedRoutes;
+                    } else {
+                      return onboardingRoutes;
+                    }
+                  }
                 }
                 return guestRoutes;
               }),

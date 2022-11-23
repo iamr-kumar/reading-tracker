@@ -50,10 +50,14 @@ class AuthRepository {
         uid: user.uid,
         name: name,
         email: email,
+        onboardingComplete: false,
       );
       await _users.doc(user.uid).set(userModel.toMap());
       return right(userModel);
     } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-already-exists') {
+        throw Failure('User already exists');
+      }
       throw e.message!;
     } catch (err) {
       return left(Failure(err.toString()));
@@ -71,6 +75,11 @@ class AuthRepository {
       final userModel = await getUserData(user.uid).first;
       return right(userModel);
     } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        throw Failure('Invalid email or password');
+      } else if (e.code == 'wrong-password') {
+        throw Failure('Invalid email or password');
+      }
       throw e.message!;
     } catch (err) {
       return left(Failure(err.toString()));
@@ -95,10 +104,12 @@ class AuthRepository {
 
       if (userCredential.additionalUserInfo!.isNewUser) {
         userModel = UserModel(
-            name: userCredential.user!.displayName ?? 'Untitled',
-            uid: userCredential.user!.uid,
-            email: userCredential.user!.email!,
-            photoURL: userCredential.user!.photoURL ?? '');
+          name: userCredential.user!.displayName ?? 'Untitled',
+          uid: userCredential.user!.uid,
+          email: userCredential.user!.email!,
+          photoURL: userCredential.user!.photoURL ?? '',
+          onboardingComplete: false,
+        );
 
         await _users.doc(userCredential.user!.uid).set(userModel.toMap());
       } else {

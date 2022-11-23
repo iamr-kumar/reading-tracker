@@ -1,6 +1,5 @@
 // Guest Routes
 import 'package:flutter/material.dart';
-import 'package:reading_tracker/core/widgets/loader.dart';
 import 'package:reading_tracker/features/auth/screens/login_screen.dart';
 import 'package:reading_tracker/features/auth/screens/singup_screen.dart';
 import 'package:reading_tracker/features/auth/screens/welcome_screen.dart';
@@ -19,12 +18,11 @@ final authenticatedRoutes =
   '/': (_) => const MaterialPage(child: OnboardingScreen()),
   '/signup': (_) => const Redirect('/'),
   '/login': (_) => const Redirect('/'),
-  // '/create-community': (_) =>
-  //     const MaterialPage(child: CreateCommunityScreen()),
-  // '/r/:name': (route) =>
-  //     MaterialPage(child: CommunityScreen(name: route.pathParameters['name']!)),
-  // '/mod-tools/:name': (route) =>
-  //     MaterialPage(child: ModToolsScreen(name: route.pathParameters['name']!)),
-  // '/edit-community/:name': (route) => MaterialPage(
-  //     child: EditCommunityScreen(name: route.pathParameters['name']!))
+});
+
+final onboardingRoutes =
+    RouteMap(onUnknownRoute: (_) => const Redirect('/'), routes: {
+  '/': (_) => const MaterialPage(child: OnboardingScreen()),
+  // '/onboarding/1': (_) => const Redirect('/'),
+  // '/login': (_) => const Redirect('/'),
 });

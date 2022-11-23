@@ -9,29 +9,30 @@ class UserModel {
   final String name;
   final DateTime? readingTime;
   final String? photoURL;
+  final bool? onboardingComplete;
 
-  UserModel({
-    required this.uid,
-    required this.email,
-    required this.name,
-    this.readingTime,
-    this.photoURL,
-  });
+  UserModel(
+      {required this.uid,
+      required this.email,
+      required this.name,
+      this.readingTime,
+      this.photoURL,
+      this.onboardingComplete});
 
-  UserModel copyWith({
-    String? uid,
-    String? email,
-    String? name,
-    DateTime? readingTime,
-    String? photoURL,
-  }) {
+  UserModel copyWith(
+      {String? uid,
+      String? email,
+      String? name,
+      DateTime? readingTime,
+      String? photoURL,
+      bool? onboardingComplete}) {
     return UserModel(
-      uid: uid ?? this.uid,
-      email: email ?? this.email,
-      name: name ?? this.name,
-      readingTime: readingTime ?? this.readingTime,
-      photoURL: photoURL ?? this.photoURL,
-    );
+        uid: uid ?? this.uid,
+        email: email ?? this.email,
+        name: name ?? this.name,
+        readingTime: readingTime ?? this.readingTime,
+        photoURL: photoURL ?? this.photoURL,
+        onboardingComplete: onboardingComplete ?? this.onboardingComplete);
   }
 
   Map<String, dynamic> toMap() {
@@ -41,24 +42,27 @@ class UserModel {
       'name': name,
       'readingTime': readingTime?.millisecondsSinceEpoch,
       'photoURL': photoURL,
+      'onboardingComplete': onboardingComplete
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      uid: map['uid'] as String,
-      email: map['email'] as String,
-      name: map['name'] as String,
-      readingTime: map['readingTime'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['readingTime'] as int)
-          : null,
-      photoURL: map['photoURL'] != null ? map['photoURL'] as String : null,
-    );
+        uid: map['uid'] as String,
+        email: map['email'] as String,
+        name: map['name'] as String,
+        readingTime: map['readingTime'] != null
+            ? DateTime.fromMillisecondsSinceEpoch(map['readingTime'] as int)
+            : null,
+        photoURL: map['photoURL'] != null ? map['photoURL'] as String : null,
+        onboardingComplete: map['onboardingComplete'] != null
+            ? map['onboardingComplete'] as bool
+            : null);
   }
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, email: $email, name: $name, readingTime: $readingTime, photoURL: $photoURL)';
+    return 'UserModel(uid: $uid, email: $email, name: $name, readingTime: $readingTime, photoURL: $photoURL, onboardingComplete: $onboardingComplete)';
   }
 
   @override
@@ -69,7 +73,8 @@ class UserModel {
         other.email == email &&
         other.name == name &&
         other.readingTime == readingTime &&
-        other.photoURL == photoURL;
+        other.photoURL == photoURL &&
+        other.onboardingComplete == onboardingComplete;
   }
 
   @override
@@ -78,6 +83,7 @@ class UserModel {
         email.hashCode ^
         name.hashCode ^
         readingTime.hashCode ^
-        photoURL.hashCode;
+        photoURL.hashCode ^
+        onboardingComplete.hashCode;
   }
 }

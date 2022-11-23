@@ -5,11 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reading_tracker/core/widgets/custom_button.dart';
 import 'package:reading_tracker/core/widgets/google_button.dart';
 import 'package:reading_tracker/core/widgets/input_field.dart';
+import 'package:reading_tracker/core/widgets/loader.dart';
 import 'package:reading_tracker/core/widgets/or_divider.dart';
 import 'package:reading_tracker/features/auth/controllers/auth_controller.dart';
 
 import 'package:reading_tracker/theme/app_styles.dart';
 import 'package:reading_tracker/theme/pallete.dart';
+import 'package:reading_tracker/utils/show_dialog.dart';
 import 'package:routemaster/routemaster.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
@@ -75,6 +77,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     final height = MediaQuery.of(context).size.height;
 
     final isLoading = ref.watch(authControllerProvider);
+
+    if (isLoading) {
+      showNewDialog(context, const Loader(), false);
+    }
 
     return Scaffold(
       body: SafeArea(

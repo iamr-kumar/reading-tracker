@@ -43,8 +43,13 @@ class CustomButton extends StatelessWidget {
           ),
           Visibility(
               visible: isLoading,
-              child: Loader(
-                color: isOutlined ? Pallete.primaryBlue : Pallete.white,
+              child: SizedBox(
+                height: 20,
+                width: 20,
+                child: Loader(
+                  color: isOutlined ? Pallete.primaryBlue : Pallete.white,
+                  strokeWidth: 2.5,
+                ),
               ))
         ],
       ),
