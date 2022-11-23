@@ -14,9 +14,11 @@ final guestRoutes = RouteMap(routes: {
 });
 
 // Authenticated Routes
-final authenticatedRoutes = RouteMap(routes: {
-  // '/': (_) => const MaterialPage(child: HomeScreen()),
-  '/': (_) => const MaterialPage(child: OnboardingScreen())
+final authenticatedRoutes =
+    RouteMap(onUnknownRoute: (_) => const Redirect('/'), routes: {
+  '/': (_) => const MaterialPage(child: OnboardingScreen()),
+  '/signup': (_) => const Redirect('/'),
+  '/login': (_) => const Redirect('/'),
   // '/create-community': (_) =>
   //     const MaterialPage(child: CreateCommunityScreen()),
   // '/r/:name': (route) =>
@@ -25,13 +27,4 @@ final authenticatedRoutes = RouteMap(routes: {
   //     MaterialPage(child: ModToolsScreen(name: route.pathParameters['name']!)),
   // '/edit-community/:name': (route) => MaterialPage(
   //     child: EditCommunityScreen(name: route.pathParameters['name']!))
-});
-
-final loadingRoute = RouteMap(routes: {
-  '/': (_) => const MaterialPage(
-          child: Scaffold(
-        body: Center(
-          child: Loader(),
-        ),
-      ))
 });
