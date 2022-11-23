@@ -1,23 +1,25 @@
 // ignore_for_file: camel_case_extensions
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reading_tracker/core/widgets/custom_button.dart';
 import 'package:reading_tracker/core/widgets/google_button.dart';
 import 'package:reading_tracker/core/widgets/input_field.dart';
 import 'package:reading_tracker/core/widgets/or_divider.dart';
+import 'package:reading_tracker/features/auth/controllers/auth_controller.dart';
 
 import 'package:reading_tracker/theme/app_styles.dart';
 import 'package:reading_tracker/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
-class SignupScreen extends StatefulWidget {
+class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  ConsumerState<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SignupScreenState extends ConsumerState<SignupScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailConrtoller = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -25,8 +27,6 @@ class _SignupScreenState extends State<SignupScreen> {
       TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -65,9 +65,16 @@ class _SignupScreenState extends State<SignupScreen> {
     return null;
   }
 
+  void signUp() {
+    ref.read(authControllerProvider.notifier).signUp(_nameController.text,
+        _emailConrtoller.text, _passwordController.text, context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+
+    final isLoading = ref.watch(authControllerProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -133,9 +140,11 @@ class _SignupScreenState extends State<SignupScreen> {
                       SizedBox(height: height * 0.02),
                       CustomButton(
                           text: 'Signup',
-                          isLoading: _isLoading,
-                          onPressed: () =>
-                              {if (_formKey.currentState!.validate()) {}}),
+                          isLoading: isLoading,
+                          onPressed: () => {
+                                if (_formKey.currentState!.validate())
+                                  {signUp()}
+                              }),
                     ],
                   )),
               SizedBox(height: height * 0.025),

@@ -37,6 +37,46 @@ class AuthRepository {
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
+  FutureEither<UserModel> signUp(
+      String name, String email, String password) async {
+    try {
+      final userCredential = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      final user = userCredential.user;
+      if (user == null) {
+        return left(Failure('Some error occurred'));
+      }
+      final userModel = UserModel(
+        uid: user.uid,
+        name: name,
+        email: email,
+      );
+      await _users.doc(user.uid).set(userModel.toMap());
+      return right(userModel);
+    } on FirebaseAuthException catch (e) {
+      throw e.message!;
+    } catch (err) {
+      return left(Failure(err.toString()));
+    }
+  }
+
+  FutureEither<UserModel> signIn(String email, String password) async {
+    try {
+      final userCredential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      final user = userCredential.user;
+      if (user == null) {
+        return left(Failure('Some error occurred'));
+      }
+      final userModel = await getUserData(user.uid).first;
+      return right(userModel);
+    } on FirebaseAuthException catch (e) {
+      throw e.message!;
+    } catch (err) {
+      return left(Failure(err.toString()));
+    }
+  }
+
   FutureEither<UserModel> signinWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
