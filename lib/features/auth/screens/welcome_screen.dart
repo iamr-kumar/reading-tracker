@@ -13,10 +13,6 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final devHeight = MediaQuery.of(context).size.height;
 
-    void showSignupScreen() {
-      Routemaster.of(context).push('/signup');
-    }
-
     void showLoginScreen() {
       Routemaster.of(context).push('/login');
     }

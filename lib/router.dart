@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:reading_tracker/features/auth/screens/login_screen.dart';
 import 'package:reading_tracker/features/auth/screens/singup_screen.dart';
 import 'package:reading_tracker/features/auth/screens/welcome_screen.dart';
-import 'package:reading_tracker/features/onboarding/screens/onboarding_screen.dart';
+import 'package:reading_tracker/features/onboarding/screens/onboarding_start_screen.dart';
 import 'package:routemaster/routemaster.dart';
 
 final guestRoutes = RouteMap(routes: {
