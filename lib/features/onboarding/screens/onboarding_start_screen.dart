@@ -3,27 +3,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reading_tracker/core/constants/local_constants.dart';
 import 'package:reading_tracker/core/widgets/custom_button.dart';
-import 'package:reading_tracker/features/auth/controllers/auth_controller.dart';
 import 'package:reading_tracker/theme/app_styles.dart';
 import 'package:reading_tracker/theme/pallete.dart';
+import 'package:routemaster/routemaster.dart';
 
-class OnboardingScreen extends ConsumerWidget {
+class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
 
-  void logout(WidgetRef ref) {
-    ref.read(authControllerProvider.notifier).logout();
-  }
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final devHeight = MediaQuery.of(context).size.height;
+
+    void startOnboarding() {
+      Routemaster.of(context).push('/onboarding/select-book');
+    }
 
     Widget onboardingIllustration = SvgPicture.asset(
         Constants.onboardingFirstIllustration,
-        height: devHeight * 0.65);
+        height: devHeight * 0.6);
 
     return Scaffold(
-      backgroundColor: Pallete.primaryBlue,
+      // backgroundColor: Pallete.primaryBlue,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -32,17 +32,22 @@ class OnboardingScreen extends ConsumerWidget {
             children: [
               onboardingIllustration,
               SizedBox(height: devHeight * 0.03),
-              Text(
-                'Let\'s get some things ready for you!',
-                style: AppStyles.headingTwo.copyWith(color: Pallete.white),
+              const Text(
+                'Hey, there!',
+                style: AppStyles.headingThree,
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'We just need to get some things ready to get you started',
+                style: AppStyles.subtext,
               ),
               SizedBox(
-                height: devHeight * 0.04,
+                height: devHeight * 0.06,
               ),
               CustomButton(
                 text: 'Begin',
-                onPressed: () => logout(ref),
-                isOutlined: true,
+                onPressed: startOnboarding,
+                // isOutlined: true,
               )
             ],
           ),

@@ -47,7 +47,7 @@ class WelcomeScreen extends StatelessWidget {
                     textAlign: TextAlign.left,
                     style: AppStyles.subtext
                         .copyWith(color: Pallete.textGreyLight)),
-                SizedBox(height: devHeight * 0.06),
+                SizedBox(height: devHeight * 0.04),
                 CustomButton(
                   text: 'Get Started',
                   onPressed: showLoginScreen,

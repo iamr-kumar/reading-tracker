@@ -3,7 +3,10 @@ class Constants {
       'assets/svg/welcome_illustration.svg';
 
   static const String onboardingFirstIllustration =
-      'assets/svg/onboard_first_illustration.svg';
+      'assets/svg/onboarding_start_illustration.svg';
+
+  static const String onboardingBookSearchIllustration =
+      'assets/svg/onboarding_book_search.svg';
 
   static const String appName = 'Read Wise';
   static const String welcomeMessage =

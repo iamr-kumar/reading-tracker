@@ -43,6 +43,7 @@ class _MyAppState extends ConsumerState<MyApp> {
               debugShowCheckedModeBanner: false,
               title: 'Read Wise',
               theme: ThemeData(
+                fontFamily: 'Poppins',
                 primarySwatch: Colors.blue,
                 scaffoldBackgroundColor: Colors.white,
               ),
