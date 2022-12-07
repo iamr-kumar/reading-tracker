@@ -1,22 +1,55 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:reading_tracker/core/widgets/custom_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reading_tracker/core/widgets/loader.dart';
+import 'package:reading_tracker/features/books/controllers/book_search_controller.dart';
+import 'package:reading_tracker/models/book_model.dart';
 import 'package:reading_tracker/theme/pallete.dart';
 
-class BookSearch extends StatefulWidget {
+class BookSearch extends ConsumerStatefulWidget {
   final bool? selectMultiple;
 
   const BookSearch({super.key, this.selectMultiple = false});
 
   @override
-  State<BookSearch> createState() => _BookSearchState();
+  ConsumerState<BookSearch> createState() => _BookSearchState();
 }
 
-class _BookSearchState extends State<BookSearch> {
+class _BookSearchState extends ConsumerState<BookSearch> {
   final TextEditingController _searchController = TextEditingController();
+
+  List<Book> books = [];
+  Timer? _debounce;
+
+  void searchBooks() async {
+    final query = _searchController.text;
+    if (query.isNotEmpty) {
+      // context.read(bookSearchProvider).searchBooks(query);
+      books = await ref.read(bookSearchProvider.notifier).searchBooks(query);
+      setState(() {});
+    }
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      searchBooks();
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    bool isLoading = ref.watch(bookSearchProvider);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Column(
@@ -26,6 +59,7 @@ class _BookSearchState extends State<BookSearch> {
           ),
           TextField(
             controller: _searchController,
+            onChanged: _onSearchChanged,
             decoration: const InputDecoration(
                 prefixIcon: Icon(
                   FeatherIcons.search,
@@ -44,14 +78,24 @@ class _BookSearchState extends State<BookSearch> {
           const SizedBox(
             height: 20,
           ),
-          Expanded(
-              child: ListView(
-            children: const [
-              Text('Hello'),
-              Text('Hello'),
-              Text('Hello'),
-            ],
-          )),
+          isLoading
+              ? const Loader()
+              : _searchController.text.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: books.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          leading: Image.network(
+                              books[index].thumbnail ??
+                                  'https://via.placeholder.com/150',
+                              width: 50),
+                          title: Text(books[index].title),
+                          subtitle: Text(books[index].authors.join(', ')),
+                          trailing: TextButton(
+                              child: const Text('Add'), onPressed: () {}),
+                        );
+                      })
+                  : const Center(child: Text('Search for a book')),
         ],
       ),
     );
