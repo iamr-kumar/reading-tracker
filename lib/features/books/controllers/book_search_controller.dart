@@ -1,44 +1,51 @@
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart';
-import 'package:reading_tracker/core/config/keys.dart';
-import 'package:reading_tracker/models/book_model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reading_tracker/features/books/repository/book_repository.dart';
+import 'package:reading_tracker/models/book_model.dart';
+import 'package:reading_tracker/utils/show_snackbar.dart';
 
-final bookSearchProvider = StateNotifierProvider<BookSearchController, bool>(
-    (ref) => BookSearchController());
+final bookControllerProvider =
+    StateNotifierProvider<BookController, BookSelectionState>(
+        (ref) => BookController(ref.watch(bookRepositoryProvider)));
 
-class BookSearchController extends StateNotifier<bool> {
-  BookSearchController() : super(false);
+class BookSelectionState {
+  final Book? book;
+  final List<Book> searchedBooks;
+  final bool isLoading;
 
-  Future<List<Book>> searchBooks(String query) async {
-    state = true;
-    String apiKey;
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      apiKey = Keys.API_KEY_ANDROID;
-    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-      apiKey = Keys.API_KEY_IOS;
-    } else {
-      apiKey = Keys.API_KEY;
-    }
-    final response = await get(
-      Uri.parse(
-        '${Keys.API_URI}$query$apiKey',
-      ),
+  BookSelectionState({
+    this.book,
+    this.searchedBooks = const [],
+    this.isLoading = false,
+  });
+
+  BookSelectionState copyWith({
+    Book? book,
+    List<Book>? searchedBooks,
+    bool? isLoading,
+  }) {
+    return BookSelectionState(
+      book: book ?? this.book,
+      searchedBooks: searchedBooks ?? this.searchedBooks,
+      isLoading: isLoading ?? this.isLoading,
     );
-    state = false;
-    if (response.statusCode == 200) {
-      final body = json.decode(response.body);
+  }
+}
 
-      List<dynamic> books = body['items'];
+class BookController extends StateNotifier<BookSelectionState> {
+  final BookRepository _bookRepository;
 
-      return books
-          .map(
-              (book) => Book.fromMap({...book['volumeInfo'], "id": book["id"]}))
-          .toList();
-    } else {
-      throw Exception('Failed to load books');
-    }
+  BookController(this._bookRepository) : super(BookSelectionState());
+
+  void searchBooks(String query, BuildContext context) async {
+    state = state.copyWith(isLoading: true);
+    final books = await _bookRepository.searchBooks(query);
+    books.fold((l) => showSnackBar(context, l.message), (books) {
+      state = state.copyWith(searchedBooks: books, isLoading: false);
+    });
+  }
+
+  void selectBook(Book book) {
+    state = state.copyWith(book: book);
   }
 }

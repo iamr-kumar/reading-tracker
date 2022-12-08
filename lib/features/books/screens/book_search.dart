@@ -23,20 +23,23 @@ class _BookSearchState extends ConsumerState<BookSearch> {
   List<Book> books = [];
   Timer? _debounce;
 
-  void searchBooks() async {
+  void searchBooks(BuildContext context) async {
     final query = _searchController.text;
     if (query.isNotEmpty) {
-      // context.read(bookSearchProvider).searchBooks(query);
-      books = await ref.read(bookSearchProvider.notifier).searchBooks(query);
-      setState(() {});
+      ref.read(bookControllerProvider.notifier).searchBooks(query, context);
     }
   }
 
-  void _onSearchChanged(String query) {
+  void _onSearchChanged(BuildContext context) {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      searchBooks();
+      searchBooks(context);
     });
+  }
+
+  void selectBook(Book book, BuildContext context) {
+    ref.read(bookControllerProvider.notifier).selectBook(book);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -48,7 +51,8 @@ class _BookSearchState extends ConsumerState<BookSearch> {
 
   @override
   Widget build(BuildContext context) {
-    bool isLoading = ref.watch(bookSearchProvider);
+    bool isLoading = ref.watch(bookControllerProvider).isLoading;
+    List<Book> books = ref.watch(bookControllerProvider).searchedBooks;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -59,7 +63,7 @@ class _BookSearchState extends ConsumerState<BookSearch> {
           ),
           TextField(
             controller: _searchController,
-            onChanged: _onSearchChanged,
+            onChanged: (value) => _onSearchChanged(context),
             decoration: const InputDecoration(
                 prefixIcon: Icon(
                   FeatherIcons.search,
@@ -81,21 +85,26 @@ class _BookSearchState extends ConsumerState<BookSearch> {
           isLoading
               ? const Loader()
               : _searchController.text.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: books.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          leading: Image.network(
-                              books[index].thumbnail ??
-                                  'https://via.placeholder.com/150',
-                              width: 50),
-                          title: Text(books[index].title),
-                          subtitle: Text(books[index].authors.join(', ')),
-                          trailing: TextButton(
-                              child: const Text('Add'), onPressed: () {}),
-                        );
-                      })
-                  : const Center(child: Text('Search for a book')),
+                  ? Expanded(
+                      child: ListView.builder(
+                          itemCount: books.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              leading: Image.network(
+                                  books[index].thumbnail ??
+                                      'https://via.placeholder.com/150',
+                                  width: 50),
+                              title: Text(books[index].title),
+                              subtitle: Text(books[index].authors.join(', ')),
+                              trailing: TextButton(
+                                  child: const Text('Add'),
+                                  onPressed: () =>
+                                      selectBook(books[index], context)),
+                            );
+                          }),
+                    )
+                  : const Center(
+                      child: Text('What are you reading right now?')),
         ],
       ),
     );
