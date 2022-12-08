@@ -9,12 +9,12 @@ final bookControllerProvider =
         (ref) => BookController(ref.watch(bookRepositoryProvider)));
 
 class BookSelectionState {
-  final Book? book;
+  final Book? selectedBook;
   final List<Book> searchedBooks;
   final bool isLoading;
 
   BookSelectionState({
-    this.book,
+    this.selectedBook,
     this.searchedBooks = const [],
     this.isLoading = false,
   });
@@ -25,7 +25,7 @@ class BookSelectionState {
     bool? isLoading,
   }) {
     return BookSelectionState(
-      book: book ?? this.book,
+      selectedBook: book ?? selectedBook,
       searchedBooks: searchedBooks ?? this.searchedBooks,
       isLoading: isLoading ?? this.isLoading,
     );

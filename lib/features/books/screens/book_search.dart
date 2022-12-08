@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reading_tracker/core/widgets/loader.dart';
-import 'package:reading_tracker/features/books/controllers/book_search_controller.dart';
+import 'package:reading_tracker/features/books/controllers/book_controller.dart';
 import 'package:reading_tracker/models/book_model.dart';
 import 'package:reading_tracker/theme/pallete.dart';
 
@@ -19,8 +19,6 @@ class BookSearch extends ConsumerStatefulWidget {
 
 class _BookSearchState extends ConsumerState<BookSearch> {
   final TextEditingController _searchController = TextEditingController();
-
-  List<Book> books = [];
   Timer? _debounce;
 
   void searchBooks(BuildContext context) async {

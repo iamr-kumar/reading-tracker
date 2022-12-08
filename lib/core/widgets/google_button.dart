@@ -28,7 +28,7 @@ class GoogleSigninButton extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                height: 30.0,
+                height: 25.0,
                 width: 30.0,
                 decoration: const BoxDecoration(
                   image: DecorationImage(

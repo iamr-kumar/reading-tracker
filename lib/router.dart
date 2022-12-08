@@ -7,6 +7,8 @@ import 'package:reading_tracker/features/onboarding/screens/onboarding_book_sele
 import 'package:reading_tracker/features/onboarding/screens/onboarding_start_screen.dart';
 import 'package:routemaster/routemaster.dart';
 
+import 'features/onboarding/screens/onboarding_set_target_screen.dart';
+
 final guestRoutes = RouteMap(routes: {
   '/': (_) => const MaterialPage(child: WelcomeScreen()),
   '/login': (_) => const MaterialPage(child: LoginScreen()),
@@ -26,5 +28,6 @@ final onboardingRoutes =
   '/': (_) => const MaterialPage(child: OnboardingScreen()),
   '/onboarding/select-book': (_) =>
       const MaterialPage(child: OnboardingBookSelectScreen()),
-  // '/login': (_) => const Redirect('/'),
+  '/onboarding/set-target': (_) =>
+      const MaterialPage(child: OnboardingSetTargetScreen())
 });

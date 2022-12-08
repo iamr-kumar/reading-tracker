@@ -153,13 +153,13 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                               }),
                     ],
                   )),
-              SizedBox(height: height * 0.025),
+              SizedBox(height: height * 0.01),
               const OrDivider(),
               SizedBox(
-                height: height * 0.025,
+                height: height * 0.01,
               ),
               const GoogleSigninButton(),
-              SizedBox(height: height * 0.03),
+              SizedBox(height: height * 0.015),
               Center(
                 child: InkWell(
                   onTap: () {
