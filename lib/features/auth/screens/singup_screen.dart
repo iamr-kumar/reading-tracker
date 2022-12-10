@@ -68,6 +68,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   }
 
   void signUp() {
+    showNewDialog(context, const Loader(), false);
     ref.read(authControllerProvider.notifier).signUp(_nameController.text,
         _emailConrtoller.text, _passwordController.text, context);
   }
@@ -77,10 +78,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     final height = MediaQuery.of(context).size.height;
 
     final isLoading = ref.watch(authControllerProvider);
-
-    if (isLoading) {
-      showNewDialog(context, const Loader(), false);
-    }
 
     return Scaffold(
       body: SafeArea(
@@ -146,7 +143,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       SizedBox(height: height * 0.02),
                       CustomButton(
                           text: 'Signup',
-                          isLoading: isLoading,
                           onPressed: () => {
                                 if (_formKey.currentState!.validate())
                                   {signUp()}

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reading_tracker/core/constants/local_constants.dart';
 import 'package:reading_tracker/core/widgets/custom_button.dart';
 import 'package:reading_tracker/theme/app_styles.dart';
-import 'package:reading_tracker/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -26,7 +24,8 @@ class OnboardingScreen extends StatelessWidget {
       // backgroundColor: Pallete.primaryBlue,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding:
+              const EdgeInsets.only(top: 8, bottom: 16.0, left: 16, right: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -41,13 +40,15 @@ class OnboardingScreen extends StatelessWidget {
                 'We just need to get some things ready to get you started',
                 style: AppStyles.subtext,
               ),
-              SizedBox(
-                height: devHeight * 0.06,
-              ),
-              CustomButton(
-                text: 'Begin',
-                onPressed: startOnboarding,
-                // isOutlined: true,
+              Expanded(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: CustomButton(
+                    text: 'Begin',
+                    onPressed: startOnboarding,
+                    // isOutlined: true,
+                  ),
+                ),
               )
             ],
           ),

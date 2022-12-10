@@ -1,63 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reading_tracker/core/constants/local_constants.dart';
 import 'package:reading_tracker/core/widgets/custom_button.dart';
-import 'package:reading_tracker/features/books/controllers/book_controller.dart';
-import 'package:reading_tracker/features/books/screens/book_search.dart';
-import 'package:reading_tracker/models/book_model.dart';
+import 'package:reading_tracker/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:reading_tracker/theme/app_styles.dart';
 import 'package:reading_tracker/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
-import "package:flutter_feather_icons/flutter_feather_icons.dart";
 
-class OnboardingBookSelectScreen extends ConsumerWidget {
-  const OnboardingBookSelectScreen({super.key});
+class OnboardingTimeSelectScreen extends ConsumerWidget {
+  const OnboardingTimeSelectScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final devHeight = MediaQuery.of(context).size.height;
 
-    final Widget onboardingBookSearchIllustration = SvgPicture.asset(
-        Constants.onboardingBookSearchIllustration,
-        height: devHeight * 0.55);
-
-    Book? selectedBook = ref.watch(bookControllerProvider).selectedBook;
+    final Widget onboardingTimeSelectIllustration = SvgPicture.asset(
+        Constants.onboardingTimeSelectIllustration,
+        height: devHeight * 0.6);
 
     void routeBack() {
       Routemaster.of(context).pop();
     }
 
-    void searchBook(BuildContext context) {
-      showModalBottomSheet(
-          context: context,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-          ),
-          isDismissible: false,
-          isScrollControlled: true,
-          builder: (ctx) {
-            return SizedBox(
-              height: devHeight * 0.95,
-              child: const BookSearch(),
-            );
-          });
+    final readingTime = ref.watch(onboardingControllerProvider).time;
+
+    TimeOfDay initialTime = TimeOfDay(hour: 17, minute: 0);
+
+    void handleTimeSelect() async {
+      TimeOfDay? newTime =
+          await showTimePicker(context: context, initialTime: initialTime);
+
+      if (newTime != null) {
+        ref.read(onboardingControllerProvider.notifier).setTime(newTime);
+      }
     }
 
-    void nextPage() {
-      Routemaster.of(context).push('/onboarding/set-target');
+    String getSubtext() {
+      if (readingTime != null) {
+        return 'You will be reminded to read everyday at ${readingTime.format(context)}';
+      } else {
+        return 'Tell us when you want to be reminded to read in a day';
+      }
     }
 
     return Scaffold(
-        body: SafeArea(
-      child: Padding(
+      body: SafeArea(
+          child: Padding(
         padding:
             const EdgeInsets.only(top: 8, bottom: 16.0, left: 16, right: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: devHeight * 0.02,
             ),
             InkWell(
               onTap: routeBack,
@@ -66,20 +63,15 @@ class OnboardingBookSelectScreen extends ConsumerWidget {
                 color: Pallete.primaryBlue,
               ),
             ),
-            onboardingBookSearchIllustration,
+            onboardingTimeSelectIllustration,
             const Text(
-              'Add a book',
+              'Select reading time',
               style: AppStyles.headingTwo,
             ),
-            selectedBook == null
-                ? const Text(
-                    'Search for a book that you are currently reading or planning to read',
-                    style: AppStyles.subtext,
-                  )
-                : Text(
-                    'You are currently set for a wonderful journey ahead with ${selectedBook.title}',
-                    style: AppStyles.subtext,
-                  ),
+            Text(getSubtext(), style: AppStyles.subtext),
+            SizedBox(
+              height: devHeight * 0.08,
+            ),
             Expanded(
               child: Align(
                 alignment: Alignment.bottomCenter,
@@ -87,19 +79,22 @@ class OnboardingBookSelectScreen extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: CustomButton(
-                          text: 'Find Book',
-                          onPressed: () => searchBook(context)),
+                        text: 'Select Time',
+                        onPressed: handleTimeSelect,
+                      ),
                     ),
                     Visibility(
-                      visible: selectedBook != null,
+                      visible: readingTime != null,
                       child: const SizedBox(
                         width: 16,
                       ),
                     ),
                     Visibility(
-                      visible: selectedBook != null,
+                      visible: readingTime != null,
                       child: InkWell(
-                        onTap: nextPage,
+                        onTap: () {
+                          Routemaster.of(context).push('/onboarding/finish');
+                        },
                         child: Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
@@ -118,7 +113,7 @@ class OnboardingBookSelectScreen extends ConsumerWidget {
             )
           ],
         ),
-      ),
-    ));
+      )),
+    );
   }
 }
