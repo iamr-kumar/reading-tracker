@@ -8,7 +8,7 @@ class OnboardingState {
   final TimeOfDay? time;
 
   OnboardingState({
-    this.type,
+    this.type = 1,
     this.minutes,
     this.pages,
     this.time,

@@ -6,6 +6,7 @@ import 'package:reading_tracker/features/books/controllers/book_controller.dart'
 import 'package:reading_tracker/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:reading_tracker/theme/app_styles.dart';
 import 'package:reading_tracker/theme/pallete.dart';
+
 import 'package:routemaster/routemaster.dart';
 
 class OnboardingFinishScreen extends ConsumerWidget {

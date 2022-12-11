@@ -9,6 +9,7 @@ import 'package:reading_tracker/features/onboarding/controllers/onboarding_contr
 import 'package:reading_tracker/theme/app_styles.dart';
 import 'package:reading_tracker/theme/pallete.dart';
 import 'package:reading_tracker/utils/show_dialog.dart';
+
 import 'package:routemaster/routemaster.dart';
 
 class OnboardingSetTargetScreen extends ConsumerStatefulWidget {
@@ -23,8 +24,13 @@ class _OnboardingSetTargetScreenState
     extends ConsumerState<OnboardingSetTargetScreen> {
   int? pages;
   int? minutes;
+  int? type = 1;
 
   TextEditingController _targetController = TextEditingController();
+
+  void setTargetType(int? value) {
+    ref.read(onboardingControllerProvider.notifier).setType(value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +39,6 @@ class _OnboardingSetTargetScreenState
     final Widget onboardingSetTargetIllustration = SvgPicture.asset(
         Constants.onboardingSetTargetIllustration,
         height: devHeight * 0.6);
-
-    final selectedBook = ref.watch(bookControllerProvider).selectedBook;
 
     final pages = ref.watch(onboardingControllerProvider).pages;
 
@@ -45,7 +49,22 @@ class _OnboardingSetTargetScreenState
     }
 
     void updateTarget(String text) {
-      ref.read(onboardingControllerProvider.notifier).setPages(int.parse(text));
+      if (type == 1) {
+        ref
+            .read(onboardingControllerProvider.notifier)
+            .setPages(int.parse(text));
+      } else {
+        ref
+            .read(onboardingControllerProvider.notifier)
+            .setMinutes(int.parse(text));
+      }
+      ref.read(onboardingControllerProvider.notifier).setType(type);
+    }
+
+    void updateType(int? value) {
+      setState(() {
+        type = value;
+      });
     }
 
     String getSubtext() {
@@ -77,9 +96,6 @@ class _OnboardingSetTargetScreenState
               ),
             ),
             onboardingSetTargetIllustration,
-            const SizedBox(
-              height: 20,
-            ),
             const Text(
               'Set your goal',
               style: AppStyles.headingTwo,
@@ -97,8 +113,63 @@ class _OnboardingSetTargetScreenState
                       child: CustomButton(
                           text: 'Set Goal',
                           onPressed: () async {
-                            await showSetTargetDialog(
-                                context, _targetController);
+                            await showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0)),
+                                    // contentPadding: const EdgeInsets.all(0),
+                                    insetPadding: const EdgeInsets.all(16),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 24.0, vertical: 16),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: RadioListTile(
+                                                  title: const Text('Pages'),
+                                                  value: 1,
+                                                  groupValue: type,
+                                                  onChanged: (value) =>
+                                                      updateType(value)),
+                                            ),
+                                            Expanded(
+                                              child: RadioListTile(
+                                                  title: const Text('Minutes'),
+                                                  value: 2,
+                                                  groupValue: type,
+                                                  onChanged: (value) =>
+                                                      updateType(value)),
+                                            )
+                                          ],
+                                        ),
+                                        TextFormField(
+                                          controller: _targetController,
+                                          keyboardType: TextInputType.number,
+                                          decoration: const InputDecoration(
+                                              hintText: "Enter your goal"),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Align(
+                                          alignment: Alignment.centerRight,
+                                          child: TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('Save'),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                });
+
                             if (_targetController.text.isNotEmpty) {
                               updateTarget(_targetController.text);
                             }
