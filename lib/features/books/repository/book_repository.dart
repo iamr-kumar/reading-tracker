@@ -1,18 +1,32 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart';
 import 'package:reading_tracker/core/config/keys.dart';
+import 'package:reading_tracker/core/constants/firebase_constants.dart';
 import 'package:reading_tracker/core/failure.dart';
 import 'package:reading_tracker/core/type_defs.dart';
+import 'package:reading_tracker/features/auth/controllers/auth_controller.dart';
 import 'package:reading_tracker/models/book_model.dart';
+import 'package:reading_tracker/providers/firebase_providers.dart';
 
-final bookRepositoryProvider =
-    Provider<BookRepository>((ref) => BookRepository());
+final bookRepositoryProvider = Provider<BookRepository>((ref) =>
+    BookRepository(ref.read(firestoreProvider), ref.read(userProvider)!.uid));
 
 class BookRepository {
+  final FirebaseFirestore _firestore;
+  final String uid;
+
+  BookRepository(this._firestore, this.uid);
+
+  CollectionReference get _books => _firestore
+      .collection(FirebaseConstants.usersCollection)
+      .doc(uid)
+      .collection(FirebaseConstants.booksCollection);
+
   FutureEither<List<Book>> searchBooks(String query) async {
     String apiKey;
     if (defaultTargetPlatform == TargetPlatform.android) {
@@ -39,6 +53,16 @@ class BookRepository {
           .toList());
     } else {
       throw left(Failure('Failed to load books'));
+    }
+  }
+
+  FutureVoid addBook(Book book) async {
+    try {
+      return right(_books.doc(book.id).set(book.toMap()));
+    } on FirebaseException catch (err) {
+      throw err.message!;
+    } catch (err) {
+      return left(Failure(err.toString()));
     }
   }
 }

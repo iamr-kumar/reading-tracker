@@ -4,12 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reading_tracker/core/constants/local_constants.dart';
 import 'package:reading_tracker/core/widgets/custom_button.dart';
-import 'package:reading_tracker/features/books/controllers/book_controller.dart';
 import 'package:reading_tracker/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:reading_tracker/theme/app_styles.dart';
 import 'package:reading_tracker/theme/pallete.dart';
-import 'package:reading_tracker/utils/show_dialog.dart';
-
 import 'package:routemaster/routemaster.dart';
 
 class OnboardingSetTargetScreen extends ConsumerStatefulWidget {
@@ -22,11 +19,9 @@ class OnboardingSetTargetScreen extends ConsumerStatefulWidget {
 
 class _OnboardingSetTargetScreenState
     extends ConsumerState<OnboardingSetTargetScreen> {
-  int? pages;
-  int? minutes;
   int? type = 1;
 
-  TextEditingController _targetController = TextEditingController();
+  final TextEditingController _targetController = TextEditingController();
 
   void setTargetType(int? value) {
     ref.read(onboardingControllerProvider.notifier).setType(value);

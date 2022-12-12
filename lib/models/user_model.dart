@@ -2,37 +2,54 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:reading_tracker/utils/handle_time.dart';
 
 class UserModel {
   final String uid;
   final String email;
   final String name;
-  final DateTime? readingTime;
+  final TimeOfDay? readingTime;
   final String? photoURL;
-  final bool? onboardingComplete;
+  final int? pages;
+  final int? minutes;
+  final int? type;
+  final String? readingBook;
 
-  UserModel(
-      {required this.uid,
-      required this.email,
-      required this.name,
-      this.readingTime,
-      this.photoURL,
-      this.onboardingComplete});
+  UserModel({
+    required this.uid,
+    required this.email,
+    required this.name,
+    this.readingTime,
+    this.photoURL,
+    this.pages,
+    this.minutes,
+    this.type,
+    this.readingBook,
+  });
 
-  UserModel copyWith(
-      {String? uid,
-      String? email,
-      String? name,
-      DateTime? readingTime,
-      String? photoURL,
-      bool? onboardingComplete}) {
+  UserModel copyWith({
+    String? uid,
+    String? email,
+    String? name,
+    TimeOfDay? readingTime,
+    String? photoURL,
+    int? pages,
+    int? minutes,
+    int? type,
+    String? readingBook,
+  }) {
     return UserModel(
-        uid: uid ?? this.uid,
-        email: email ?? this.email,
-        name: name ?? this.name,
-        readingTime: readingTime ?? this.readingTime,
-        photoURL: photoURL ?? this.photoURL,
-        onboardingComplete: onboardingComplete ?? this.onboardingComplete);
+      uid: uid ?? this.uid,
+      email: email ?? this.email,
+      name: name ?? this.name,
+      readingTime: readingTime ?? this.readingTime,
+      photoURL: photoURL ?? this.photoURL,
+      pages: pages ?? this.pages,
+      minutes: minutes ?? this.minutes,
+      type: type ?? this.type,
+      readingBook: readingBook ?? this.readingBook,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -40,29 +57,35 @@ class UserModel {
       'uid': uid,
       'email': email,
       'name': name,
-      'readingTime': readingTime?.millisecondsSinceEpoch,
+      'readingTime': readingTime != null ? toTimestamp(readingTime!) : null,
       'photoURL': photoURL,
-      'onboardingComplete': onboardingComplete
+      'pages': pages,
+      'minutes': minutes,
+      'type': type,
+      'readingBook': readingBook,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-        uid: map['uid'] as String,
-        email: map['email'] as String,
-        name: map['name'] as String,
-        readingTime: map['readingTime'] != null
-            ? DateTime.fromMillisecondsSinceEpoch(map['readingTime'] as int)
-            : null,
-        photoURL: map['photoURL'] != null ? map['photoURL'] as String : null,
-        onboardingComplete: map['onboardingComplete'] != null
-            ? map['onboardingComplete'] as bool
-            : null);
+      uid: map['uid'] as String,
+      email: map['email'] as String,
+      name: map['name'] as String,
+      readingTime: map['readingTime'] != null
+          ? fromTimestamp(map['readingTime'] as Timestamp)
+          : null,
+      photoURL: map['photoURL'] != null ? map['photoURL'] as String : null,
+      pages: map['pages'] != null ? map['pages'] as int : null,
+      minutes: map['minutes'] != null ? map['minutes'] as int : null,
+      type: map['type'] != null ? map['type'] as int : null,
+      readingBook:
+          map['readingBook'] != null ? map['readingBook'] as String : null,
+    );
   }
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, email: $email, name: $name, readingTime: $readingTime, photoURL: $photoURL, onboardingComplete: $onboardingComplete)';
+    return 'UserModel(uid: $uid, email: $email, name: $name, readingTime: $readingTime, photoURL: $photoURL, pages: $pages, minutes: $minutes, type: $type, readingBook: $readingBook)';
   }
 
   @override
@@ -74,7 +97,10 @@ class UserModel {
         other.name == name &&
         other.readingTime == readingTime &&
         other.photoURL == photoURL &&
-        other.onboardingComplete == onboardingComplete;
+        other.pages == pages &&
+        other.minutes == minutes &&
+        other.type == type &&
+        other.readingBook == readingBook;
   }
 
   @override
@@ -84,6 +110,9 @@ class UserModel {
         name.hashCode ^
         readingTime.hashCode ^
         photoURL.hashCode ^
-        onboardingComplete.hashCode;
+        pages.hashCode ^
+        minutes.hashCode ^
+        type.hashCode ^
+        readingBook.hashCode;
   }
 }

@@ -12,6 +12,10 @@ import 'package:routemaster/routemaster.dart';
 class OnboardingFinishScreen extends ConsumerWidget {
   const OnboardingFinishScreen({super.key});
 
+  void completeOnboarding(WidgetRef ref, BuildContext context) {
+    ref.read(onboardingControllerProvider.notifier).completeOnboarding(context);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final devHeight = MediaQuery.of(context).size.height;
@@ -23,6 +27,8 @@ class OnboardingFinishScreen extends ConsumerWidget {
     final selectedBook = ref.watch(bookControllerProvider).selectedBook;
 
     final data = ref.watch(onboardingControllerProvider);
+
+    final isLoading = data.loading;
 
     return Scaffold(
         body: SafeArea(
@@ -86,7 +92,10 @@ class OnboardingFinishScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('${data.pages} pages',
+                  Text(
+                      data.pages != null
+                          ? '${data.pages} pages'
+                          : '${data.minutes} minutes',
                       style: AppStyles.subheading.copyWith(
                           fontWeight: FontWeight.w500,
                           color: Pallete.primaryBlue)),
@@ -120,7 +129,11 @@ class OnboardingFinishScreen extends ConsumerWidget {
             Expanded(
                 child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: CustomButton(text: 'Finish', onPressed: () {})))
+                    child: CustomButton(
+                        isLoading: isLoading,
+                        isDisabled: isLoading,
+                        text: 'Finish',
+                        onPressed: () => completeOnboarding(ref, context))))
           ],
         ),
       ),

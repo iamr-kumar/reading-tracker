@@ -51,7 +51,8 @@ class _MyAppState extends ConsumerState<MyApp> {
                 if (data != null) {
                   getData(ref, data);
                   if (userModel != null) {
-                    if (userModel!.onboardingComplete!) {
+                    print(userModel!.readingBook);
+                    if (userModel!.readingBook != null) {
                       return authenticatedRoutes;
                     } else {
                       return onboardingRoutes;

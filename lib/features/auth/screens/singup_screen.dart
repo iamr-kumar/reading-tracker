@@ -143,6 +143,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       SizedBox(height: height * 0.02),
                       CustomButton(
                           text: 'Signup',
+                          isLoading: isLoading,
+                          isDisabled: isLoading,
                           onPressed: () => {
                                 if (_formKey.currentState!.validate())
                                   {signUp()}

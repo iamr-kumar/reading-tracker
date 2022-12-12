@@ -50,7 +50,6 @@ class AuthRepository {
         uid: user.uid,
         name: name,
         email: email,
-        onboardingComplete: false,
       );
       await _users.doc(user.uid).set(userModel.toMap());
       return right(userModel);
@@ -108,7 +107,6 @@ class AuthRepository {
           uid: userCredential.user!.uid,
           email: userCredential.user!.email!,
           photoURL: userCredential.user!.photoURL ?? '',
-          onboardingComplete: false,
         );
 
         await _users.doc(userCredential.user!.uid).set(userModel.toMap());

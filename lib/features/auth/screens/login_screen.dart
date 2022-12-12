@@ -39,6 +39,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+
+    final isLoading = ref.watch(authControllerProvider);
+
     return Scaffold(
       body: SafeArea(
           child: Container(
@@ -72,7 +75,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   textInputType: TextInputType.text,
                   hintText: 'Password'),
               SizedBox(height: height * 0.028),
-              CustomButton(text: 'Login', onPressed: login),
+              CustomButton(
+                text: 'Login',
+                onPressed: login,
+                isLoading: isLoading,
+                isDisabled: isLoading,
+              ),
               SizedBox(height: height * 0.035),
               const OrDivider(),
               SizedBox(
