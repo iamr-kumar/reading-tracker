@@ -20,9 +20,11 @@ class BookInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Image(
-          image: NetworkImage(book.thumbnail!),
-        ),
+        book.thumbnail != null
+            ? Image(
+                image: NetworkImage(book.thumbnail!),
+              )
+            : const SizedBox(),
         SizedBox(
           height: height * 0.01,
         ),

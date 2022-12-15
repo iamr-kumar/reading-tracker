@@ -41,6 +41,7 @@ dependencies:
   fpdart: ^0.3.0
   google_sign_in: ^5.4.2
   http: ^0.13.5
+  percent_indicator: ^4.2.2
   routemaster: ^1.0.1
 
 dev_dependencies:

@@ -70,7 +70,9 @@ class Book {
           : null,
       thumbnail: map['imageLinks'] != null
           ? map['imageLinks']['thumbnail'] as String
-          : null,
+          : map['thumbnail'] != null
+              ? map['thumbnail'] as String
+              : null,
       pageCount: map['pageCount'] ?? 0,
     );
   }

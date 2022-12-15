@@ -9,6 +9,8 @@ class Pallete {
   static const Color textGrey = Color(0xFF959595);
   static const Color textGreyLight = Color(0xFFEAEAEA);
   static const Color white = Color(0xFFFFFFFF);
+  static const Color blueGrey = Color(0xFFF4F7F9);
+  static const Color red = Color(0xFFFE3644);
 
   // // Themes
   // static var darkModeAppTheme = ThemeData.dark().copyWith(

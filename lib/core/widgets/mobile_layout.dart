@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:reading_tracker/features/home/screens/home_screen.dart';
+import 'package:reading_tracker/features/home/screens/profile_screen.dart';
 import 'package:reading_tracker/theme/pallete.dart';
 
 class MobileScreenLayout extends StatefulWidget {
@@ -28,11 +29,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   }
 
   void swithPage(int page) {
-    _pageController.animateToPage(
-      page,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
+    _pageController.jumpToPage(page);
   }
 
   void onPageChanged(int page) {
@@ -46,7 +43,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     Container(color: Colors.green),
     Container(color: Colors.blue),
     Container(color: Colors.yellow),
-    Container(color: Colors.purple),
+    const ProfileScreen(),
   ];
 
   @override
