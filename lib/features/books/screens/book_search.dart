@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reading_tracker/core/widgets/loader.dart';
-import 'package:reading_tracker/features/books/controllers/book_controller.dart';
+import 'package:reading_tracker/features/books/controllers/book_search_controller.dart';
 import 'package:reading_tracker/models/book_model.dart';
 import 'package:reading_tracker/theme/pallete.dart';
 
@@ -24,7 +24,9 @@ class _BookSearchState extends ConsumerState<BookSearch> {
   void searchBooks(BuildContext context) async {
     final query = _searchController.text;
     if (query.isNotEmpty) {
-      ref.read(bookControllerProvider.notifier).searchBooks(query, context);
+      ref
+          .read(bookSearchControllerProvider.notifier)
+          .searchBooks(query, context);
     }
   }
 
@@ -36,7 +38,7 @@ class _BookSearchState extends ConsumerState<BookSearch> {
   }
 
   void selectBook(Book book, BuildContext context) {
-    ref.read(bookControllerProvider.notifier).selectBook(book);
+    ref.read(bookSearchControllerProvider.notifier).selectBook(book);
     Navigator.of(context).pop();
   }
 
@@ -49,8 +51,8 @@ class _BookSearchState extends ConsumerState<BookSearch> {
 
   @override
   Widget build(BuildContext context) {
-    bool isLoading = ref.watch(bookControllerProvider).isLoading;
-    List<Book> books = ref.watch(bookControllerProvider).searchedBooks;
+    bool isLoading = ref.watch(bookSearchControllerProvider).isLoading;
+    List<Book> books = ref.watch(bookSearchControllerProvider).searchedBooks;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),

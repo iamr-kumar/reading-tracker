@@ -65,4 +65,15 @@ class BookRepository {
       return left(Failure(err.toString()));
     }
   }
+
+  FutureEither<Book> getBook(String id) async {
+    try {
+      final book = await _books.doc(id).get();
+      return right(Book.fromMap(book.data() as Map<String, dynamic>));
+    } on FirebaseException catch (err) {
+      throw err.message!;
+    } catch (err) {
+      return left(Failure(err.toString()));
+    }
+  }
 }

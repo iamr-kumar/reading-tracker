@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reading_tracker/features/auth/controllers/auth_controller.dart';
 import 'package:reading_tracker/features/auth/repository/auth_repository.dart';
-import 'package:reading_tracker/features/books/controllers/book_controller.dart';
+import 'package:reading_tracker/features/books/controllers/book_search_controller.dart';
 import 'package:reading_tracker/features/books/repository/book_repository.dart';
 import 'package:reading_tracker/features/goal/repository/reading_goal_repository.dart';
 import 'package:reading_tracker/models/book_model.dart';
@@ -71,7 +71,7 @@ class OnboardingController extends StateNotifier<OnboardingState> {
 
   void completeOnboarding(BuildContext context) async {
     state.loading = true;
-    Book? book = _ref.read(bookControllerProvider).selectedBook;
+    Book? book = _ref.read(bookSearchControllerProvider).selectedBook;
     String uid = _ref.read(userProvider)!.uid;
     int? type = state.type;
     int? minutes = state.minutes;

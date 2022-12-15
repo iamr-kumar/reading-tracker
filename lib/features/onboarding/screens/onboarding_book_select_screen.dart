@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reading_tracker/core/constants/local_constants.dart';
 import 'package:reading_tracker/core/widgets/custom_button.dart';
-import 'package:reading_tracker/features/books/controllers/book_controller.dart';
+import 'package:reading_tracker/features/books/controllers/book_search_controller.dart';
 import 'package:reading_tracker/features/books/screens/book_search.dart';
 import 'package:reading_tracker/models/book_model.dart';
 import 'package:reading_tracker/theme/app_styles.dart';
@@ -22,7 +22,7 @@ class OnboardingBookSelectScreen extends ConsumerWidget {
         Constants.onboardingBookSearchIllustration,
         height: devHeight * 0.55);
 
-    Book? selectedBook = ref.watch(bookControllerProvider).selectedBook;
+    Book? selectedBook = ref.watch(bookSearchControllerProvider).selectedBook;
 
     void routeBack() {
       Routemaster.of(context).pop();

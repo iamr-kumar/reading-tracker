@@ -1,51 +1,54 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reading_tracker/features/auth/controllers/auth_controller.dart';
 import 'package:reading_tracker/features/books/repository/book_repository.dart';
 import 'package:reading_tracker/models/book_model.dart';
-import 'package:reading_tracker/utils/show_snackbar.dart';
 
-final bookControllerProvider =
-    StateNotifierProvider<BookController, BookSelectionState>(
-        (ref) => BookController(ref.watch(bookRepositoryProvider)));
+final bookControllerProvider = StateNotifierProvider<BookController, BookState>(
+    (ref) => BookController(ref.read(bookRepositoryProvider), ref));
 
-class BookSelectionState {
-  final Book? selectedBook;
-  final List<Book> searchedBooks;
+class BookState {
+  final Book? currentlyReading;
+  final List<Book>? books;
   final bool isLoading;
+  final String? error;
 
-  BookSelectionState({
-    this.selectedBook,
-    this.searchedBooks = const [],
-    this.isLoading = false,
-  });
+  BookState(
+      {this.currentlyReading,
+      this.books = const [],
+      this.isLoading = true,
+      this.error});
 
-  BookSelectionState copyWith({
-    Book? book,
-    List<Book>? searchedBooks,
+  BookState copyWith({
+    Book? currentlyReading,
+    List<Book>? books,
     bool? isLoading,
+    String? error,
   }) {
-    return BookSelectionState(
-      selectedBook: book ?? selectedBook,
-      searchedBooks: searchedBooks ?? this.searchedBooks,
+    return BookState(
+      currentlyReading: currentlyReading ?? this.currentlyReading,
+      books: books ?? this.books,
       isLoading: isLoading ?? this.isLoading,
+      error: error ?? this.error,
     );
   }
 }
 
-class BookController extends StateNotifier<BookSelectionState> {
+class BookController extends StateNotifier<BookState> {
   final BookRepository _bookRepository;
+  final Ref _ref;
 
-  BookController(this._bookRepository) : super(BookSelectionState());
-
-  void searchBooks(String query, BuildContext context) async {
-    state = state.copyWith(isLoading: true);
-    final books = await _bookRepository.searchBooks(query);
-    books.fold((l) => showSnackBar(context, l.message), (books) {
-      state = state.copyWith(searchedBooks: books, isLoading: false);
-    });
+  BookController(this._bookRepository, this._ref) : super(BookState()) {
+    getCurrentlyReading();
   }
 
-  void selectBook(Book book) {
-    state = state.copyWith(book: book);
+  void getCurrentlyReading() async {
+    state = state.copyWith(isLoading: true);
+    final user = _ref.read(userProvider);
+    final book = await _bookRepository.getBook(user!.readingBook!);
+    book.fold((l) {
+      state = state.copyWith(error: l.message, isLoading: false);
+    }, (userBook) {
+      state = state.copyWith(currentlyReading: userBook, isLoading: false);
+    });
   }
 }

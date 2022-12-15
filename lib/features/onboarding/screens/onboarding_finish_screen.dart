@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reading_tracker/core/widgets/book_info.dart';
 import 'package:reading_tracker/core/widgets/custom_button.dart';
-import 'package:reading_tracker/features/books/controllers/book_controller.dart';
+import 'package:reading_tracker/features/books/controllers/book_search_controller.dart';
 import 'package:reading_tracker/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:reading_tracker/theme/app_styles.dart';
 import 'package:reading_tracker/theme/pallete.dart';
@@ -24,7 +25,7 @@ class OnboardingFinishScreen extends ConsumerWidget {
       Routemaster.of(context).pop();
     }
 
-    final selectedBook = ref.watch(bookControllerProvider).selectedBook;
+    final selectedBook = ref.watch(bookSearchControllerProvider).selectedBook;
 
     final data = ref.watch(onboardingControllerProvider);
 
@@ -61,25 +62,8 @@ class OnboardingFinishScreen extends ConsumerWidget {
               height: devHeight * 0.02,
             ),
             Align(
-              alignment: Alignment.center,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image(
-                    image: NetworkImage(selectedBook!.thumbnail!),
-                  ),
-                  SizedBox(
-                    height: devHeight * 0.01,
-                  ),
-                  Text(selectedBook.title,
-                      style: AppStyles.subtext.copyWith(
-                          color: Pallete.primaryBlue,
-                          fontWeight: FontWeight.w500)),
-                  Text('by ${selectedBook.authors.join(', ')}',
-                      style: AppStyles.bodyText),
-                ],
-              ),
-            ),
+                alignment: Alignment.center,
+                child: BookInfo(book: selectedBook!, height: devHeight)),
             SizedBox(
               height: devHeight * 0.02,
             ),
