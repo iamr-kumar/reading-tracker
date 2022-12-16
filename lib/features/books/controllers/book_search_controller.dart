@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reading_tracker/core/type_defs.dart';
 import 'package:reading_tracker/features/books/repository/book_repository.dart';
 import 'package:reading_tracker/models/book_model.dart';
 import 'package:reading_tracker/utils/show_snackbar.dart';
@@ -45,7 +46,13 @@ class BookSearchController extends StateNotifier<BookSelectionState> {
     });
   }
 
-  void selectBook(Book book) {
+  void selectBook(Book book, int? status, String? progress) {
+    if (status != null) {
+      book = book.copyWith(status: BookStatus.values[status]);
+    }
+    if (progress != null && status == 1) {
+      book = book.copyWith(progress: int.parse(progress));
+    }
     state = state.copyWith(book: book);
   }
 }

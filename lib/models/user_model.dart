@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:reading_tracker/core/type_defs.dart';
 import 'package:reading_tracker/utils/handle_time.dart';
 
 class UserModel {
@@ -13,7 +14,7 @@ class UserModel {
   final String? photoURL;
   final int? pages;
   final int? minutes;
-  final int? type;
+  final GoalType? type;
   final String? readingBook;
 
   UserModel({
@@ -36,7 +37,7 @@ class UserModel {
     String? photoURL,
     int? pages,
     int? minutes,
-    int? type,
+    GoalType? type,
     String? readingBook,
   }) {
     return UserModel(
@@ -77,7 +78,7 @@ class UserModel {
       photoURL: map['photoURL'] != null ? map['photoURL'] as String : null,
       pages: map['pages'] != null ? map['pages'] as int : null,
       minutes: map['minutes'] != null ? map['minutes'] as int : null,
-      type: map['type'] != null ? map['type'] as int : null,
+      type: map['type'] != null ? GoalType.values[map['type']] : null,
       readingBook:
           map['readingBook'] != null ? map['readingBook'] as String : null,
     );

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reading_tracker/core/constants/local_constants.dart';
 import 'package:reading_tracker/core/widgets/custom_button.dart';
+import 'package:reading_tracker/core/widgets/goal_dialog.dart';
 import 'package:reading_tracker/features/onboarding/controllers/onboarding_controller.dart';
 import 'package:reading_tracker/theme/app_styles.dart';
 import 'package:reading_tracker/theme/pallete.dart';
@@ -19,7 +20,7 @@ class OnboardingSetTargetScreen extends ConsumerStatefulWidget {
 
 class _OnboardingSetTargetScreenState
     extends ConsumerState<OnboardingSetTargetScreen> {
-  int? type = 1;
+  int type = 1;
 
   final TextEditingController _targetController = TextEditingController();
 
@@ -57,9 +58,11 @@ class _OnboardingSetTargetScreenState
     }
 
     void updateType(int? value) {
-      setState(() {
-        type = value;
-      });
+      if (value != null) {
+        setState(() {
+          type = value;
+        });
+      }
     }
 
     String getSubtext() {
@@ -111,58 +114,11 @@ class _OnboardingSetTargetScreenState
                             await showDialog(
                                 context: context,
                                 builder: (context) {
-                                  return AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0)),
-                                    // contentPadding: const EdgeInsets.all(0),
-                                    insetPadding: const EdgeInsets.all(16),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 24.0, vertical: 16),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: RadioListTile(
-                                                  title: const Text('Pages'),
-                                                  value: 1,
-                                                  groupValue: type,
-                                                  onChanged: (value) =>
-                                                      updateType(value)),
-                                            ),
-                                            Expanded(
-                                              child: RadioListTile(
-                                                  title: const Text('Minutes'),
-                                                  value: 2,
-                                                  groupValue: type,
-                                                  onChanged: (value) =>
-                                                      updateType(value)),
-                                            )
-                                          ],
-                                        ),
-                                        TextFormField(
-                                          controller: _targetController,
-                                          keyboardType: TextInputType.number,
-                                          decoration: const InputDecoration(
-                                              hintText: "Enter your goal"),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: const Text('Save'),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
+                                  return showGoalDialog(
+                                      context: context,
+                                      targetController: _targetController,
+                                      type: type,
+                                      updateType: updateType);
                                 });
 
                             if (_targetController.text.isNotEmpty) {

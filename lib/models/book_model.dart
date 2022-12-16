@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:reading_tracker/core/type_defs.dart';
 
 class Book {
   final String id;
@@ -12,6 +13,9 @@ class Book {
   final List<String>? categories;
   final String? thumbnail;
   final int pageCount;
+  final BookStatus status;
+  final int? progress;
+
   Book({
     required this.id,
     required this.title,
@@ -21,6 +25,8 @@ class Book {
     this.categories,
     required this.thumbnail,
     required this.pageCount,
+    required this.status,
+    this.progress,
   });
 
   Book copyWith({
@@ -32,6 +38,8 @@ class Book {
     List<String>? categories,
     String? thumbnail,
     int? pageCount,
+    BookStatus? status,
+    int? progress,
   }) {
     return Book(
       id: id ?? this.id,
@@ -42,6 +50,8 @@ class Book {
       categories: categories ?? this.categories,
       thumbnail: thumbnail ?? this.thumbnail,
       pageCount: pageCount ?? this.pageCount,
+      status: status ?? this.status,
+      progress: progress ?? this.progress,
     );
   }
 
@@ -55,6 +65,8 @@ class Book {
       'categories': categories,
       'thumbnail': thumbnail,
       'pageCount': pageCount,
+      'status': status.index,
+      'progress': progress,
     };
   }
 
@@ -74,6 +86,8 @@ class Book {
               ? map['thumbnail'] as String
               : null,
       pageCount: map['pageCount'] ?? 0,
+      status: BookStatus.values[map['status'] ?? 0],
+      progress: map['progress'] ?? 0,
     );
   }
 
@@ -84,7 +98,7 @@ class Book {
 
   @override
   String toString() {
-    return 'Book(id: $id, title: $title, authors: $authors, publishedDate: $publishedDate, description: $description, categories: $categories, thumbnail: $thumbnail, pageCount: $pageCount)';
+    return 'Book(id: $id, title: $title, authors: $authors, publishedDate: $publishedDate, categories: $categories, thumbnail: $thumbnail, pageCount: $pageCount, status: $status, progress: $progress)';
   }
 
   @override
@@ -98,7 +112,9 @@ class Book {
         other.description == description &&
         listEquals(other.categories, categories) &&
         other.thumbnail == thumbnail &&
-        other.pageCount == pageCount;
+        other.pageCount == pageCount &&
+        other.status == status &&
+        other.progress == progress;
   }
 
   @override
@@ -110,6 +126,8 @@ class Book {
         description.hashCode ^
         categories.hashCode ^
         thumbnail.hashCode ^
-        pageCount.hashCode;
+        pageCount.hashCode ^
+        status.hashCode ^
+        progress.hashCode;
   }
 }

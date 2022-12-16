@@ -3,15 +3,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reading_tracker/core/widgets/book_status_dialog.dart';
 import 'package:reading_tracker/core/widgets/loader.dart';
 import 'package:reading_tracker/features/books/controllers/book_search_controller.dart';
 import 'package:reading_tracker/models/book_model.dart';
 import 'package:reading_tracker/theme/pallete.dart';
 
 class BookSearch extends ConsumerStatefulWidget {
-  final bool? selectMultiple;
+  final bool? isOnboarding;
 
-  const BookSearch({super.key, this.selectMultiple = false});
+  const BookSearch({super.key, this.isOnboarding = false});
 
   @override
   ConsumerState<BookSearch> createState() => _BookSearchState();
@@ -20,6 +21,9 @@ class BookSearch extends ConsumerStatefulWidget {
 class _BookSearchState extends ConsumerState<BookSearch> {
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
+  int status = 0;
+
+  final TextEditingController _progressController = TextEditingController();
 
   void searchBooks(BuildContext context) async {
     final query = _searchController.text;
@@ -38,15 +42,26 @@ class _BookSearchState extends ConsumerState<BookSearch> {
   }
 
   void selectBook(Book book, BuildContext context) {
-    ref.read(bookSearchControllerProvider.notifier).selectBook(book);
+    ref
+        .read(bookSearchControllerProvider.notifier)
+        .selectBook(book, status, _progressController.text);
     Navigator.of(context).pop();
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _progressController.dispose();
     _debounce?.cancel();
     super.dispose();
+  }
+
+  void setStatus(int? value) {
+    if (value != null) {
+      setState(() {
+        status = value;
+      });
+    }
   }
 
   @override
@@ -98,8 +113,23 @@ class _BookSearchState extends ConsumerState<BookSearch> {
                               subtitle: Text(books[index].authors.join(', ')),
                               trailing: TextButton(
                                   child: const Text('Add'),
-                                  onPressed: () =>
-                                      selectBook(books[index], context)),
+                                  onPressed: () async {
+                                    await showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (context) {
+                                          return showBookStatusDialog(
+                                              context: context,
+                                              page: books[index].pageCount,
+                                              progressController:
+                                                  _progressController,
+                                              status: status,
+                                              updateStatus: setStatus,
+                                              isOnboarding: true,
+                                              onComplete: () => selectBook(
+                                                  books[index], context));
+                                        });
+                                  }),
                             );
                           }),
                     )

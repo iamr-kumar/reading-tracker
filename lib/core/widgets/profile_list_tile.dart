@@ -34,6 +34,7 @@ class ProfileListTile extends StatelessWidget {
         FeatherIcons.chevronRight,
         color: isLogout ? Pallete.red : Pallete.primaryBlue,
       ),
+      onTap: onTap,
     );
   }
 }

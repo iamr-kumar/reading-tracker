@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:reading_tracker/core/type_defs.dart';
 import 'package:reading_tracker/core/widgets/book_info.dart';
 import 'package:reading_tracker/core/widgets/custom_button.dart';
 import 'package:reading_tracker/core/widgets/loader.dart';
@@ -23,9 +24,13 @@ class HomeScreen extends ConsumerWidget {
 
     final readingGoal = user.pages ?? user.minutes;
 
-    final String readingGoalType = user.type == 1 ? 'pages' : 'minutes';
-
     final bookData = ref.watch(bookControllerProvider);
+
+    final currentRead = bookData.currentlyReading;
+
+    final percentComplete = currentRead != null
+        ? currentRead.progress! / currentRead.pageCount
+        : 0.0;
 
     return Scaffold(
         body: SafeArea(
@@ -100,7 +105,7 @@ class HomeScreen extends ConsumerWidget {
                             ],
                           ),
                           Center(
-                              child: Text(readingGoalType,
+                              child: Text(describeGoalTypeEnum(user.type!),
                                   style: AppStyles.bodyText)),
                           const SizedBox(height: 16),
                           Expanded(
@@ -129,26 +134,29 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 16),
               bookData.isLoading
                   ? const Expanded(child: Center(child: Loader()))
-                  : bookData.currentlyReading == null
-                      ? const Text('Some error occurred')
+                  : currentRead == null
+                      ? const Text(
+                          'You are not currently reading anything',
+                          style: AppStyles.bodyText,
+                          textAlign: TextAlign.center,
+                        )
                       : Center(
-                          child: BookInfo(
-                              book: bookData.currentlyReading!,
-                              height: deviceHeight),
+                          child:
+                              BookInfo(book: currentRead, height: deviceHeight),
                         ),
               const SizedBox(height: 16),
               LinearPercentIndicator(
                 lineHeight: 8.0,
-                percent: 0.5,
+                percent: percentComplete,
                 progressColor: Pallete.primaryBlue,
                 animationDuration: 1000,
                 animation: true,
                 barRadius: const Radius.circular(12),
               ),
-              const Center(
+              Center(
                 heightFactor: 2,
                 child: Text(
-                  '50% completed',
+                  '${(percentComplete * 100).ceil()}% completed',
                   style: AppStyles.bodyText,
                 ),
               ),

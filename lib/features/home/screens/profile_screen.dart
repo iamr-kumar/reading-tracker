@@ -58,7 +58,7 @@ class ProfileScreen extends ConsumerWidget {
           ProfileListTile(
               title: 'Log Out',
               leading: FeatherIcons.logOut,
-              onTap: () {},
+              onTap: () => logout(ref),
               isLogout: true),
           const SizedBox(height: 16),
         ],
