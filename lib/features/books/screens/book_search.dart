@@ -5,14 +5,15 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reading_tracker/core/widgets/book_status_dialog.dart';
 import 'package:reading_tracker/core/widgets/loader.dart';
+import 'package:reading_tracker/features/books/controllers/book_controller.dart';
 import 'package:reading_tracker/features/books/controllers/book_search_controller.dart';
 import 'package:reading_tracker/models/book_model.dart';
 import 'package:reading_tracker/theme/pallete.dart';
 
 class BookSearch extends ConsumerStatefulWidget {
-  final bool? isOnboarding;
+  final bool isNew;
 
-  const BookSearch({super.key, this.isOnboarding = false});
+  const BookSearch({super.key, this.isNew = true});
 
   @override
   ConsumerState<BookSearch> createState() => _BookSearchState();
@@ -45,6 +46,13 @@ class _BookSearchState extends ConsumerState<BookSearch> {
     ref
         .read(bookSearchControllerProvider.notifier)
         .selectBook(book, status, _progressController.text);
+    Navigator.of(context).pop();
+  }
+
+  void addBook(Book book, BuildContext context) {
+    ref
+        .read(bookControllerProvider.notifier)
+        .addBook(context, book, status, _progressController.text);
     Navigator.of(context).pop();
   }
 
@@ -125,9 +133,12 @@ class _BookSearchState extends ConsumerState<BookSearch> {
                                                   _progressController,
                                               status: status,
                                               updateStatus: setStatus,
-                                              isOnboarding: true,
-                                              onComplete: () => selectBook(
-                                                  books[index], context));
+                                              isNew: true,
+                                              onComplete: () => widget.isNew
+                                                  ? selectBook(
+                                                      books[index], context)
+                                                  : addBook(
+                                                      books[index], context));
                                         });
                                   }),
                             );

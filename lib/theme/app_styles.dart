@@ -11,6 +11,9 @@ class AppStyles {
   static const TextStyle headingThree = TextStyle(
       fontSize: 32, fontWeight: FontWeight.w500, color: Pallete.primaryBlue);
 
+  static const TextStyle headingFour = TextStyle(
+      fontSize: 24, fontWeight: FontWeight.w500, color: Pallete.primaryBlue);
+
   static const TextStyle subheading = TextStyle(
       fontSize: 24, fontWeight: FontWeight.w500, color: Pallete.textBlue);
 

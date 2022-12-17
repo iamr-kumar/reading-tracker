@@ -8,7 +8,7 @@ Widget showBookStatusDialog(
     required TextEditingController progressController,
     required int status,
     required Function updateStatus,
-    bool isOnboarding = false,
+    bool isNew = true,
     required VoidCallback onComplete}) {
   return AlertDialog(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
@@ -23,13 +23,12 @@ Widget showBookStatusDialog(
               title: Text(describeStatusEnum(value)),
               value: value.index,
               groupValue: status,
-              onChanged: isOnboarding && value.index <= 1
+              onChanged: isNew || value.index <= 1
                   ? (value) => updateStatus(value)
                   : null);
         }).toList(),
         status == 1
             ? TextFormField(
-                validator: (value) {},
                 controller: progressController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(hintText: 'Pages read of $page'),
@@ -39,11 +38,14 @@ Widget showBookStatusDialog(
           alignment: Alignment.centerRight,
           child: TextButton(
             onPressed: () {
-              int progress = int.parse(progressController.text);
-              if (progress > page) {
-                return showSnackBar(
-                    context, 'Progress cannot be more than page');
+              if (status == 1) {
+                int progress = int.parse(progressController.text);
+                if (progress > page) {
+                  return showSnackBar(
+                      context, 'Progress cannot be more than page');
+                }
               }
+
               Navigator.of(context).pop();
               onComplete.call();
             },

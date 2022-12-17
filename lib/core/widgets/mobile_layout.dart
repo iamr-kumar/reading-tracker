@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:reading_tracker/features/home/screens/home_screen.dart';
+import 'package:reading_tracker/features/home/screens/library_screen.dart';
 import 'package:reading_tracker/features/home/screens/profile_screen.dart';
 import 'package:reading_tracker/theme/pallete.dart';
 
@@ -42,7 +43,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     const HomeScreen(),
     Container(color: Colors.green),
     Container(color: Colors.blue),
-    Container(color: Colors.yellow),
+    const LibraryScreen(),
     const ProfileScreen(),
   ];
 

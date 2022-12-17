@@ -128,7 +128,7 @@ class HomeScreen extends ConsumerWidget {
                                         ref, user.readingTime)),
                               ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                     )),
@@ -143,7 +143,7 @@ class HomeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               bookData.isLoading
-                  ? const Expanded(child: Center(child: Loader()))
+                  ? const SizedBox(height: 100, child: Center(child: Loader()))
                   : currentRead == null
                       ? const Text(
                           'You are not currently reading anything',

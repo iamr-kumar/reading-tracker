@@ -76,4 +76,23 @@ class BookRepository {
       return left(Failure(err.toString()));
     }
   }
+
+  Stream<List<Book>> getAllBooks() {
+    return _books.snapshots().map((snapshot) {
+      return snapshot.docs
+          .map((doc) => Book.fromMap(doc.data() as Map<String, dynamic>))
+          .toList();
+    });
+  }
+
+  Stream<List<Book>> getBooksByStatus(BookStatus status) {
+    return _books
+        .where('status', isEqualTo: status.index)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((doc) => Book.fromMap(doc.data() as Map<String, dynamic>))
+          .toList();
+    });
+  }
 }
