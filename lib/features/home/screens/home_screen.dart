@@ -7,12 +7,20 @@ import 'package:reading_tracker/core/widgets/custom_button.dart';
 import 'package:reading_tracker/core/widgets/loader.dart';
 import 'package:reading_tracker/features/auth/controllers/auth_controller.dart';
 import 'package:reading_tracker/features/books/controllers/book_controller.dart';
+import 'package:reading_tracker/providers/notification_service_provider.dart';
 import 'package:reading_tracker/theme/app_styles.dart';
 import 'package:reading_tracker/theme/pallete.dart';
 import 'package:reading_tracker/utils/handle_time.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
+
+  void showNotification(WidgetRef ref, TimeOfDay? time) {
+    if (time != null) {
+      ref.read(notificationServiceProvider).sendScheduledNotification(
+          'Notification Title', 'Notification Body', time);
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -115,7 +123,9 @@ class HomeScreen extends ConsumerWidget {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 40.0),
                                 child: CustomButton(
-                                    text: 'Read Now', onPressed: () {}),
+                                    text: 'Read Now',
+                                    onPressed: () => showNotification(
+                                        ref, user.readingTime)),
                               ),
                             ),
                           )
