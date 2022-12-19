@@ -8,6 +8,7 @@ class CustomButton extends StatelessWidget {
   final bool isLoading;
   final bool isDisabled;
   final VoidCallback onPressed;
+  final bool isCompact;
 
   const CustomButton(
       {Key? key,
@@ -15,6 +16,7 @@ class CustomButton extends StatelessWidget {
       this.isOutlined = false,
       this.isLoading = false,
       this.isDisabled = false,
+      this.isCompact = false,
       required this.onPressed})
       : super(key: key);
 
@@ -25,7 +27,9 @@ class CustomButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
           minimumSize: const Size.fromHeight(50),
           backgroundColor: isOutlined ? Colors.white : Pallete.primaryBlue,
-          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 14),
+          padding: isCompact
+              ? const EdgeInsets.symmetric(horizontal: 30, vertical: 10)
+              : const EdgeInsets.symmetric(horizontal: 50, vertical: 14),
           foregroundColor: isOutlined ? Pallete.primaryBlue : null,
           elevation: 4,
           side: isOutlined

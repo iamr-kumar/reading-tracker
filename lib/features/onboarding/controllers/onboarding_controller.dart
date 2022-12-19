@@ -7,6 +7,7 @@ import 'package:reading_tracker/features/books/controllers/book_search_controlle
 import 'package:reading_tracker/features/books/repository/book_repository.dart';
 import 'package:reading_tracker/features/goal/repository/reading_goal_repository.dart';
 import 'package:reading_tracker/models/book_model.dart';
+import 'package:reading_tracker/utils/minute_to_page.dart';
 import 'package:reading_tracker/utils/show_snackbar.dart';
 import 'package:routemaster/routemaster.dart';
 
@@ -81,6 +82,13 @@ class OnboardingController extends StateNotifier<OnboardingState> {
       return showSnackBar(context, 'Please select a book');
     }
     final newBook = await _ref.read(bookRepositoryProvider).addBook(book);
+
+    if (minutes != null) {
+      pages = getPageFromMinutes(minutes);
+    }
+    if (pages != null) {
+      minutes = getMinutesFromPage(pages);
+    }
 
     newBook.fold((l) {
       state.loading = false;
