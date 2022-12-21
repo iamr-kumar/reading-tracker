@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reading_tracker/core/widgets/book_status_dialog.dart';
+import 'package:reading_tracker/core/widgets/error_text.dart';
 import 'package:reading_tracker/core/widgets/loader.dart';
 import 'package:reading_tracker/features/books/controllers/book_controller.dart';
 import 'package:reading_tracker/features/books/controllers/book_search_controller.dart';
@@ -76,6 +77,7 @@ class _BookSearchState extends ConsumerState<BookSearch> {
   Widget build(BuildContext context) {
     bool isLoading = ref.watch(bookSearchControllerProvider).isLoading;
     List<Book> books = ref.watch(bookSearchControllerProvider).searchedBooks;
+    String? error = ref.watch(bookSearchControllerProvider).error;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -108,42 +110,45 @@ class _BookSearchState extends ConsumerState<BookSearch> {
           isLoading
               ? const Loader()
               : _searchController.text.isNotEmpty
-                  ? Expanded(
-                      child: ListView.builder(
-                          itemCount: books.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              leading: Image.network(
-                                  books[index].thumbnail ??
-                                      'https://via.placeholder.com/150',
-                                  width: 50),
-                              title: Text(books[index].title),
-                              subtitle: Text(books[index].authors.join(', ')),
-                              trailing: TextButton(
-                                  child: const Text('Add'),
-                                  onPressed: () async {
-                                    await showDialog(
-                                        context: context,
-                                        barrierDismissible: false,
-                                        builder: (context) {
-                                          return showBookStatusDialog(
-                                              context: context,
-                                              page: books[index].pageCount,
-                                              progressController:
-                                                  _progressController,
-                                              status: status,
-                                              updateStatus: setStatus,
-                                              isNew: widget.isNew,
-                                              onComplete: () => widget.isNew
-                                                  ? selectBook(
-                                                      books[index], context)
-                                                  : addBook(
-                                                      books[index], context));
-                                        });
-                                  }),
-                            );
-                          }),
-                    )
+                  ? error == null
+                      ? Expanded(
+                          child: ListView.builder(
+                              itemCount: books.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  leading: Image.network(
+                                      books[index].thumbnail ??
+                                          'https://via.placeholder.com/150',
+                                      width: 50),
+                                  title: Text(books[index].title),
+                                  subtitle:
+                                      Text(books[index].authors.join(', ')),
+                                  trailing: TextButton(
+                                      child: const Text('Add'),
+                                      onPressed: () async {
+                                        await showDialog(
+                                            context: context,
+                                            barrierDismissible: false,
+                                            builder: (context) {
+                                              return showBookStatusDialog(
+                                                  context: context,
+                                                  page: books[index].pageCount,
+                                                  progressController:
+                                                      _progressController,
+                                                  status: status,
+                                                  updateStatus: setStatus,
+                                                  isNew: widget.isNew,
+                                                  onComplete: () => widget.isNew
+                                                      ? selectBook(
+                                                          books[index], context)
+                                                      : addBook(books[index],
+                                                          context));
+                                            });
+                                      }),
+                                );
+                              }),
+                        )
+                      : ErrorText(error: error)
                   : const Center(
                       child: Text('What are you reading right now?')),
         ],

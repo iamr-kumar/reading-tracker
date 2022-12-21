@@ -68,4 +68,29 @@ class ReadingGoalRepository {
       return left(Failure(err.toString()));
     }
   }
+
+  Stream<List<ReadingLog>> getLogs(String userId) {
+    CollectionReference logs =
+        _users.doc(userId).collection(FirebaseConstants.logsCollection);
+    return logs.snapshots().map((event) {
+      return event.docs
+          .map((e) => ReadingLog.fromMap(e.data() as Map<String, dynamic>))
+          .toList();
+    });
+  }
+
+  Stream<List<ReadingLog>> getTodaysLogs(String userId) {
+    DateTime today = DateTime.now();
+    today = DateTime(today.year, today.month, today.day);
+    CollectionReference logs =
+        _users.doc(userId).collection(FirebaseConstants.logsCollection);
+    return logs
+        .where('startTime', isGreaterThanOrEqualTo: Timestamp.fromDate(today))
+        .snapshots()
+        .map((event) {
+      return event.docs
+          .map((e) => ReadingLog.fromMap(e.data() as Map<String, dynamic>))
+          .toList();
+    });
+  }
 }

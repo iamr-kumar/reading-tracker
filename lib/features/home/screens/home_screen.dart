@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:reading_tracker/core/type_defs.dart';
 import 'package:reading_tracker/core/widgets/book_info.dart';
-import 'package:reading_tracker/core/widgets/custom_button.dart';
 import 'package:reading_tracker/core/widgets/loader.dart';
+import 'package:reading_tracker/core/widgets/percent_progress_indicator.dart';
 import 'package:reading_tracker/features/auth/controllers/auth_controller.dart';
 import 'package:reading_tracker/features/books/controllers/book_controller.dart';
+import 'package:reading_tracker/features/home/screens/progress_card.dart';
 import 'package:reading_tracker/providers/notification_service_provider.dart';
 import 'package:reading_tracker/theme/app_styles.dart';
 import 'package:reading_tracker/theme/pallete.dart';
@@ -30,8 +30,6 @@ class HomeScreen extends ConsumerWidget {
     final greetingMessage = getGreetingMessage();
 
     final deviceHeight = MediaQuery.of(context).size.height;
-
-    final readingGoal = user.pages ?? user.minutes;
 
     final bookData = ref.watch(bookControllerProvider);
 
@@ -73,66 +71,7 @@ class HomeScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 16),
-              Card(
-                elevation: 5,
-                shadowColor: Pallete.textGreyLight,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-                child: SizedBox(
-                    height: deviceHeight * 0.35,
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Today\'s progress',
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: Pallete.textGrey),
-                          ),
-                          const SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                '0',
-                                style: TextStyle(
-                                    fontSize: 72,
-                                    color: Pallete.textGrey,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              Text(
-                                ' / $readingGoal',
-                                style: const TextStyle(
-                                    fontSize: 72,
-                                    color: Pallete.primaryBlue,
-                                    fontWeight: FontWeight.w600),
-                              )
-                            ],
-                          ),
-                          Center(
-                              child: Text(describeGoalTypeEnum(user.type!),
-                                  style: AppStyles.bodyText)),
-                          const SizedBox(height: 16),
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 40.0),
-                                child: CustomButton(
-                                    text: 'Read Now',
-                                    onPressed: () => switchTab(2)),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )),
-              ),
+              ProgressCard(switchTab),
               const SizedBox(height: 16),
               Text(
                 'Currently Reading',
@@ -155,14 +94,7 @@ class HomeScreen extends ConsumerWidget {
                               BookInfo(book: currentRead, height: deviceHeight),
                         ),
               const SizedBox(height: 16),
-              LinearPercentIndicator(
-                lineHeight: 8.0,
-                percent: percentComplete,
-                progressColor: Pallete.primaryBlue,
-                animationDuration: 1000,
-                animation: true,
-                barRadius: const Radius.circular(12),
-              ),
+              Center(child: PercentProgressIndicator(percent: percentComplete)),
               Center(
                 heightFactor: 2,
                 child: Text(

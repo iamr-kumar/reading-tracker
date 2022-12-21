@@ -13,22 +13,26 @@ class BookSelectionState {
   final Book? selectedBook;
   final List<Book> searchedBooks;
   final bool isLoading;
+  final String? error;
 
   BookSelectionState({
     this.selectedBook,
     this.searchedBooks = const [],
     this.isLoading = false,
+    this.error,
   });
 
   BookSelectionState copyWith({
     Book? book,
     List<Book>? searchedBooks,
     bool? isLoading,
+    String? error,
   }) {
     return BookSelectionState(
       selectedBook: book ?? selectedBook,
       searchedBooks: searchedBooks ?? this.searchedBooks,
       isLoading: isLoading ?? this.isLoading,
+      error: error ?? this.error,
     );
   }
 }
@@ -41,7 +45,9 @@ class BookSearchController extends StateNotifier<BookSelectionState> {
   void searchBooks(String query, BuildContext context) async {
     state = state.copyWith(isLoading: true);
     final books = await _bookRepository.searchBooks(query);
-    books.fold((l) => showSnackBar(context, l.message), (books) {
+    books.fold(
+        (l) => {state = state.copyWith(isLoading: false, error: l.message)},
+        (books) {
       books = books.where((e) => e.pageCount > 0).toList();
       state = state.copyWith(searchedBooks: books, isLoading: false);
     });

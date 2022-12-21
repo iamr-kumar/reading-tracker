@@ -157,7 +157,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 height: height * 0.01,
               ),
               const GoogleSigninButton(),
-              SizedBox(height: height * 0.015),
+              SizedBox(height: height * 0.02),
               Center(
                 child: InkWell(
                   onTap: () {

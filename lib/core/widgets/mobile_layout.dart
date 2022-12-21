@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:reading_tracker/features/goal/screens/reading_session.dart';
 import 'package:reading_tracker/features/home/screens/home_screen.dart';
-import 'package:reading_tracker/features/home/screens/library_screen.dart';
+import 'package:reading_tracker/features/books/screens/library_screen.dart';
 import 'package:reading_tracker/features/home/screens/profile_screen.dart';
 import 'package:reading_tracker/theme/pallete.dart';
 

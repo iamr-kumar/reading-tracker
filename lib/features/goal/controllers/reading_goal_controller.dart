@@ -2,11 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reading_tracker/features/auth/controllers/auth_controller.dart';
 import 'package:reading_tracker/features/goal/repository/reading_goal_repository.dart';
+import 'package:reading_tracker/models/reading_log_model.dart';
 import 'package:reading_tracker/utils/show_snackbar.dart';
 
 final readingGoalControllerProvider =
     StateNotifierProvider<ReadingGoalController, bool>((ref) =>
         ReadingGoalController(ref.read(readingGoalRepositoryProvider), ref));
+
+final todaysProgressProvider =
+    StreamProvider.autoDispose<List<ReadingLog>>((ref) {
+  return ref.read(readingGoalControllerProvider.notifier).getTodaysLogs();
+});
 
 class ReadingGoalController extends StateNotifier<bool> {
   final Ref _ref;
@@ -34,5 +40,15 @@ class ReadingGoalController extends StateNotifier<bool> {
     state = false;
 
     readingLog.fold((l) => showSnackBar(context, l.message), (r) => null);
+  }
+
+  Stream<List<ReadingLog>> getTodaysLogs() {
+    final userId = _ref.read(userProvider)!.uid;
+    return _readingGoalRepository.getTodaysLogs(userId);
+  }
+
+  Stream<List<ReadingLog>> getLogs() {
+    final userId = _ref.read(userProvider)!.uid;
+    return _readingGoalRepository.getLogs(userId);
   }
 }
