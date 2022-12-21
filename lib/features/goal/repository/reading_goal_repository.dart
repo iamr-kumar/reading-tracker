@@ -5,6 +5,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:reading_tracker/core/constants/firebase_constants.dart';
 import 'package:reading_tracker/core/failure.dart';
 import 'package:reading_tracker/core/type_defs.dart';
+import 'package:reading_tracker/models/reading_log_model.dart';
 import 'package:reading_tracker/providers/firebase_providers.dart';
 import 'package:reading_tracker/utils/handle_time.dart';
 
@@ -35,6 +36,32 @@ class ReadingGoalRepository {
 
     try {
       return right(_users.doc(uid).update(fieldsToUpdate));
+    } on FirebaseException catch (err) {
+      throw err.message!;
+    } catch (err) {
+      return left(Failure(err.toString()));
+    }
+  }
+
+  FutureVoid createNewLog(
+      {required String bookId,
+      required DateTime start,
+      required DateTime end,
+      required int pages,
+      required int minutes,
+      required String userId}) async {
+    try {
+      CollectionReference logs =
+          _users.doc(userId).collection(FirebaseConstants.logsCollection);
+      ReadingLog log = ReadingLog(
+        bookId: bookId,
+        startTime: start,
+        endTime: end,
+        pages: pages,
+        minutes: minutes,
+      );
+      await logs.add(log.toMap());
+      return right(null);
     } on FirebaseException catch (err) {
       throw err.message!;
     } catch (err) {

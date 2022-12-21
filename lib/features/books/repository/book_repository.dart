@@ -95,4 +95,14 @@ class BookRepository {
           .toList();
     });
   }
+
+  FutureVoid updateBook(Book book) async {
+    try {
+      return right(_books.doc(book.id).update(book.toMap()));
+    } on FirebaseException catch (err) {
+      throw err.message!;
+    } catch (err) {
+      return left(Failure(err.toString()));
+    }
+  }
 }

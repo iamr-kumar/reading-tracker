@@ -20,6 +20,9 @@ class AppStyles {
   static const TextStyle subtext =
       TextStyle(fontSize: 18, color: Pallete.textGrey);
 
+  static const TextStyle highlightedSubtext =
+      TextStyle(fontSize: 18, color: Pallete.textBlue);
+
   static const TextStyle bodyText = TextStyle(
       fontSize: 16, fontWeight: FontWeight.w500, color: Pallete.textGrey);
 }

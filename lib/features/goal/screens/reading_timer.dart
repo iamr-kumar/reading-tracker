@@ -1,21 +1,30 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reading_tracker/core/widgets/custom_button.dart';
+import 'package:reading_tracker/features/books/controllers/book_controller.dart';
+import 'package:reading_tracker/features/goal/controllers/reading_goal_controller.dart';
 import 'package:reading_tracker/theme/Pallete.dart';
 import 'package:reading_tracker/theme/app_styles.dart';
+import 'package:reading_tracker/utils/minute_to_page.dart';
+import 'package:reading_tracker/utils/show_snackbar.dart';
 
-class ReadingTimer extends StatefulWidget {
+class ReadingTimer extends ConsumerStatefulWidget {
   final int goalTime;
-  const ReadingTimer({super.key, required this.goalTime});
+  const ReadingTimer({
+    super.key,
+    required this.goalTime,
+  });
 
   @override
-  State<ReadingTimer> createState() => _ReadingTimerState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ReadingTimerState();
 }
 
-class _ReadingTimerState extends State<ReadingTimer> {
+class _ReadingTimerState extends ConsumerState<ReadingTimer> {
   int minutes = 0;
   int seconds = 0;
+  late DateTime startTime;
   Timer? timer;
 
   String getTime() {
@@ -30,12 +39,40 @@ class _ReadingTimerState extends State<ReadingTimer> {
       } else {
         seconds++;
       }
-      setState(() {});
+      setState(() {
+        startTime = DateTime.now();
+      });
     });
   }
 
   void pauseTimer() {
     timer?.cancel();
+  }
+
+  void completeSession() async {
+    if (minutes <= 0) {
+      showSnackBar(context, 'Read for a minute atleast');
+      return;
+    }
+    timer?.cancel();
+    final pages = getPageFromMinutes(minutes);
+
+    final book = ref.read(bookControllerProvider).currentlyReading!;
+    DateTime endTime = DateTime.now();
+    ref
+        .read(bookControllerProvider.notifier)
+        .updateBookProgress(context, book, pages);
+    ref.read(readingGoalControllerProvider.notifier).createNewLog(
+        bookId: book.id,
+        pages: pages == 0 ? 1 : pages,
+        minutes: minutes,
+        startTime: startTime,
+        endTime: endTime,
+        context: context);
+    setState(() {
+      minutes = 0;
+      seconds = 0;
+    });
   }
 
   Widget buildButtons() {
@@ -61,15 +98,7 @@ class _ReadingTimerState extends State<ReadingTimer> {
             ? SizedBox(
                 width: 120,
                 child: CustomButton(
-                    text: 'Done',
-                    isCompact: true,
-                    onPressed: () {
-                      timer?.cancel();
-                      setState(() {
-                        minutes = 0;
-                        seconds = 0;
-                      });
-                    }),
+                    text: 'Done', isCompact: true, onPressed: completeSession),
               )
             : const SizedBox.shrink(),
       ],
@@ -83,15 +112,6 @@ class _ReadingTimerState extends State<ReadingTimer> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Align(
-          alignment: Alignment.topLeft,
-          child: Text('Start Reading',
-              style: AppStyles.bodyText.copyWith(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: Pallete.primaryBlue)),
-        ),
-        const SizedBox(height: 40),
         Center(
           child: SizedBox(
               height: 200,

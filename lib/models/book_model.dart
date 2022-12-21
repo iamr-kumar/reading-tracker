@@ -14,7 +14,7 @@ class Book {
   final String? thumbnail;
   final int pageCount;
   final BookStatus status;
-  final int? progress;
+  final int progress;
 
   Book({
     required this.id,
@@ -26,7 +26,7 @@ class Book {
     required this.thumbnail,
     required this.pageCount,
     required this.status,
-    this.progress,
+    this.progress = 0,
   });
 
   Book copyWith({

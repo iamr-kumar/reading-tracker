@@ -8,13 +8,15 @@ class InputField extends StatefulWidget {
   final String hintText;
   final IconData? icon;
   final String? Function(String?)? validator;
+  final String? initialValue;
 
   const InputField(
       {super.key,
       required this.textEditingController,
-      required this.isPassword,
-      required this.textInputType,
-      required this.hintText,
+      this.textInputType = TextInputType.text,
+      this.initialValue,
+      this.isPassword = false,
+      this.hintText = '',
       this.validator,
       this.icon});
 

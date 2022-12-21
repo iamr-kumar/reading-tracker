@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reading_tracker/core/type_defs.dart';
 import 'package:reading_tracker/features/auth/controllers/auth_controller.dart';
 import 'package:reading_tracker/features/books/repository/book_repository.dart';
-import 'package:reading_tracker/features/goal/repository/reading_goal_repository.dart';
 import 'package:reading_tracker/models/book_model.dart';
 import 'package:reading_tracker/utils/show_snackbar.dart';
 
@@ -81,6 +80,22 @@ class BookController extends StateNotifier<BookState> {
     newBook.fold((l) => showSnackBar(context, l.message), (r) {
       final message =
           'Book added to ${describeStatusEnum(BookStatus.values[status])}';
+      showSnackBar(context, message);
+    });
+  }
+
+  void updateBookProgress(BuildContext context, Book book, int pages) async {
+    if (book.progress + pages >= book.pageCount) {
+      book =
+          book.copyWith(progress: book.pageCount, status: BookStatus.finished);
+    } else {
+      book = book.copyWith(progress: book.progress + pages);
+    }
+    final updatedBook =
+        await _ref.read(bookRepositoryProvider).updateBook(book);
+
+    updatedBook.fold((l) => showSnackBar(context, l.message), (r) {
+      const message = 'Updated your daily progress';
       showSnackBar(context, message);
     });
   }
