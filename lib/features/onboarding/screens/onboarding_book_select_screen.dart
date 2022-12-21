@@ -39,7 +39,9 @@ class OnboardingBookSelectScreen extends ConsumerWidget {
           builder: (ctx) {
             return SizedBox(
               height: devHeight * 0.95,
-              child: const BookSearch(),
+              child: const BookSearch(
+                isNew: true,
+              ),
             );
           });
     }

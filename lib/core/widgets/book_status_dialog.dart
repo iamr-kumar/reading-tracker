@@ -23,9 +23,11 @@ Widget showBookStatusDialog(
               title: Text(describeStatusEnum(value)),
               value: value.index,
               groupValue: status,
-              onChanged: isNew || value.index <= 1
-                  ? (value) => updateStatus(value)
-                  : null);
+              onChanged: isNew
+                  ? value.index <= 1
+                      ? (value) => updateStatus(value)
+                      : null
+                  : (value) => updateStatus(value));
         }).toList(),
         status == 1
             ? TextFormField(

@@ -13,7 +13,8 @@ import 'package:reading_tracker/theme/pallete.dart';
 import 'package:reading_tracker/utils/handle_time.dart';
 
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+  final ValueSetter<int> switchTab;
+  const HomeScreen({super.key, required this.switchTab});
 
   void showNotification(WidgetRef ref, TimeOfDay? time) {
     if (time != null) {
@@ -37,7 +38,7 @@ class HomeScreen extends ConsumerWidget {
     final currentRead = bookData.currentlyReading;
 
     final percentComplete = currentRead != null
-        ? currentRead.progress! / currentRead.pageCount
+        ? currentRead.progress / currentRead.pageCount
         : 0.0;
 
     return Scaffold(
@@ -124,8 +125,7 @@ class HomeScreen extends ConsumerWidget {
                                     horizontal: 40.0),
                                 child: CustomButton(
                                     text: 'Read Now',
-                                    onPressed: () => showNotification(
-                                        ref, user.readingTime)),
+                                    onPressed: () => switchTab(2)),
                               ),
                             ),
                           ),

@@ -42,6 +42,7 @@ class BookSearchController extends StateNotifier<BookSelectionState> {
     state = state.copyWith(isLoading: true);
     final books = await _bookRepository.searchBooks(query);
     books.fold((l) => showSnackBar(context, l.message), (books) {
+      books = books.where((e) => e.pageCount > 0).toList();
       state = state.copyWith(searchedBooks: books, isLoading: false);
     });
   }

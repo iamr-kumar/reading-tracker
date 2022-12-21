@@ -30,17 +30,18 @@ class BookRepository {
   FutureEither<List<Book>> searchBooks(String query) async {
     String apiKey;
     if (defaultTargetPlatform == TargetPlatform.android) {
-      apiKey = Keys.API_KEY_ANDROID;
+      apiKey = Keys.apiKeyAndroid;
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-      apiKey = Keys.API_KEY_IOS;
+      apiKey = Keys.apiKeyIOS;
     } else {
-      apiKey = Keys.API_KEY;
+      apiKey = Keys.apiKey;
     }
-    final response = await get(
-      Uri.parse(
-        '${Keys.API_URI}$query$apiKey',
-      ),
-    );
+    final uri = Uri.parse('${Keys.apiBaseUrl}${Keys.apiPath}')
+        .replace(queryParameters: {
+      'q': query,
+      'key': apiKey,
+    });
+    final response = await get(uri);
 
     if (response.statusCode == 200) {
       final body = json.decode(response.body);

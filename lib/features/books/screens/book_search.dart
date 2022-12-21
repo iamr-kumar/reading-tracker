@@ -133,7 +133,7 @@ class _BookSearchState extends ConsumerState<BookSearch> {
                                                   _progressController,
                                               status: status,
                                               updateStatus: setStatus,
-                                              isNew: true,
+                                              isNew: widget.isNew,
                                               onComplete: () => widget.isNew
                                                   ? selectBook(
                                                       books[index], context)

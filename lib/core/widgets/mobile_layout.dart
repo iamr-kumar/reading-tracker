@@ -30,7 +30,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     _pageController.dispose();
   }
 
-  void swithPage(int page) {
+  void switchPage(int page) {
     _pageController.jumpToPage(page);
   }
 
@@ -40,16 +40,16 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     });
   }
 
-  final homeScreenItems = <Widget>[
-    const HomeScreen(),
-    Container(color: Colors.green),
-    const ReadingSessionScreen(),
-    const LibraryScreen(),
-    const ProfileScreen(),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final homeScreenItems = <Widget>[
+      HomeScreen(switchTab: switchPage),
+      Container(color: Colors.green),
+      const ReadingSessionScreen(),
+      const LibraryScreen(),
+      const ProfileScreen(),
+    ];
+
     return Scaffold(
       body: PageView(
         controller: _pageController,
@@ -92,7 +92,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
               ),
               label: '')
         ],
-        onTap: swithPage,
+        onTap: switchPage,
       ),
     );
   }
